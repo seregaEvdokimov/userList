@@ -93,9 +93,9 @@
         this.tooltipModel.create({id: id, type: type})
             .then(function(res) {
                 self.render(type, res);
-                self.show(cords);
             });
 
+        setTimeout(this.show.bind(this, cords), 200);
         return this;
     };
 
