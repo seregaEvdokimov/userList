@@ -262,7 +262,7 @@
 
         var user = this.container.user;
         user[self.CRUDType](data).then(function(res) {
-            if(self.CRUDType == 'create') self.container.pagination.afterCRUD();
+            self.container.pagination.refresh();
             (self.CRUDType == 'create')
                 ? self.container.userTableTbody.createRow(res)
                 : self.container.userTableTbody.updateRow(res);

@@ -8,7 +8,6 @@
         this.el = document.createElement('div');
         this.el.className = 'search';
         this.container = App.serviceContainer;
-
         this.collection = option.collection;
 
         // put to container

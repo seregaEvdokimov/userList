@@ -8,7 +8,7 @@
 
     App.Request = {
         load: function(options) {
-            var URL = this.generateFullUrl(options.entity);
+            var URL = this.generateFullUrl(options.entity, options.payload);
             var xhr = new App.Request.XHR({
                 method: 'GET',
                 URL: URL,
@@ -51,7 +51,8 @@
             return xhr.sendRequest();
         },
 
-        generateFullUrl: function(entity) {
+        generateFullUrl: function(entity, params) {
+            var queryString = this.createQueryString(params);
             var fragmentUrl = '';
             switch (entity) {
                 case 'user':
@@ -62,7 +63,19 @@
                     break;
             }
 
-            return baseUrl + fragmentUrl;
+            return baseUrl + fragmentUrl + queryString;
+        },
+
+        createQueryString: function(params) {
+            if(!params) return '';
+
+            var str = '?';
+            for(var index in params) {
+                str += index + '=' + params[index] + '&';
+            }
+
+            str = str.slice(0, -1);
+            return str;
         }
     };
 

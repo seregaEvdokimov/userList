@@ -108,20 +108,35 @@ app.get('/user', function (req, res) {
             return console.log(err);
         } else {
             console.log(data);
-            var result = JSON.parse(data);
+            var users = JSON.parse(data);
+
+            if(req.query.count) {
+                var out = {count: users.length};
+                addResponseHeaders(res);
+                return res.end(JSON.stringify(out));
+            }
+
+            var model = req.query;
+            var start = (model.start == 1) ? 0 : model.start;
+            var limit = model.limit;
+
+            var result = users.filter(function (item, index) {
+                return index >= start && index < limit;
+            });
+
             addResponseHeaders(res);
             res.end(JSON.stringify(result));
         }
     });
 });
 
-app.post('/tooltip', function (req, res) {
+app.get('/tooltip', function (req, res) {
     fs.readFile(pathToUsersList, 'utf8', function (err, data) {
         if (err) {
             return console.log(err);
         } else {
             var users = JSON.parse(data);
-            var model = req.body;
+            var model = req.query;
 
             var id = parseInt(model.id);
             var type = model.type;

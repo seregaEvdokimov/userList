@@ -6,13 +6,9 @@
 
     function EditUser(option) {
         var self = this;
+        App.View.Modal.CreateUser.call(this, option);
 
-        this.el = document.createElement('div');
         this.el.className = 'modal-window modal-edit';
-        this.el.style.visibility = 'hidden';
-
-        this.modalEl = option.modalEl;
-        this.collection = option.collection;
         this.CRUDType = 'update';
         this.renderOrder.push('id');
         this.fields.id = function() {
@@ -25,17 +21,11 @@
             return nameInput;
         };
 
-        // components
-        this.uploader = new App.Lib.ImageUploader();
-
-        // listeners
-        this.el.addEventListener('click', this.handlerControlBtn.bind(this, this));
-
         // put to container
         App.serviceContainer.modalEdit = this;
     }
 
-    EditUser.prototype = new App.View.Modal.CreateUser({});
+    EditUser.prototype = Object.create(App.View.Modal.CreateUser.prototype);
 
     EditUser.prototype.loadData = function(id) {
         var find = this.collection.user.filter(function(item) {

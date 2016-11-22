@@ -11,8 +11,9 @@
         View: {},
         serviceContainer: {},
         pagination: {
+            type: 'lazyLoad', //pagination
             currentPage: 1,
-            perPage: 20
+            perPage: 6
         }
     };
 

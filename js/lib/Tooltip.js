@@ -7,6 +7,7 @@
         this.el = document.createElement('div');
         this.el.className = 'tooltip';
         this.tooltipModel = new App.Model.Tooltip();
+        this.hover = false;
 
         this.types = {
             name: ['image', 'text'],
@@ -89,13 +90,17 @@
 
     Tooltip.prototype.create = function(type, id, cords) {
         var self = this;
+        this.hover = true;
 
-        this.tooltipModel.create({id: id, type: type})
-            .then(function(res) {
-                self.render(type, res);
-            });
+        setTimeout(function(){
+            if(self.hover) {
+                self.tooltipModel.load({id: id, type: type}).then(function(res) {
+                    self.render(type, res);
+                    self.show(cords);
+                });
+            }
+        }, 500);
 
-        setTimeout(this.show.bind(this, cords), 200);
         return this;
     };
 
@@ -105,6 +110,8 @@
         elements.map(function(item) {
             document.body.removeChild(item);
         });
+
+        this.hover = false;
     };
 
     Tooltip.prototype.render = function(type, data) {

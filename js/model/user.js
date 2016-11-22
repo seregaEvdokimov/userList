@@ -15,8 +15,15 @@
     User.prototype = new App.Model();
 
     User.prototype.onLoadUserSuccess = function(result) {
-        this.records = result;
-        return this.records;
+        var self = this;
+
+        if(result.length) {
+            result.forEach(function(item) {
+                self.records.push(item);
+            });
+        }
+
+        return result;
     };
 
     User.prototype.onLoadUserError = function(error) {
@@ -69,10 +76,11 @@
         return error;
     };
 
-    User.prototype.load = function() {
+    User.prototype.load = function(data) {
         var self = this;
         return this.xhrLoad({
             entity: this.entity,
+            payload: data,
             success: this.onLoadUserSuccess.bind(self),
             error: this.onLoadUserError.bind(self)
         });

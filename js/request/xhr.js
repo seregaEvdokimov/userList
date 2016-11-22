@@ -9,10 +9,10 @@
         this.method = config.method;
         this.URL = config.URL;
         this.config = config.options;
-        this.queryString = '';
+        this.paramsBody = '';
 
         if('payload' in this.config) {
-            this.queryString = this.createRequestString(this.config.payload);
+            this.paramsBody = this.createParamsBody(this.config.payload);
         }
     }
 
@@ -22,11 +22,11 @@
             self.xhr.open(self.method, self.URL, true);
             self.xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             self.xhr.addEventListener('readystatechange', self.readyStateChangeHandler.bind(self, resolve, reject));
-            self.xhr.send(self.queryString);
+            self.xhr.send(self.paramsBody);
         });
     };
 
-    XHR.prototype.createRequestString = function(data) {
+    XHR.prototype.createParamsBody = function(data) {
         var str = '';
         for (var key in data) {
             str += key + '=' + encodeURIComponent(data[key] + '') + '&';

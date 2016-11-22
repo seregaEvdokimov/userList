@@ -14,23 +14,23 @@
 
     Tooltip.prototype = new App.Model();
 
-    Tooltip.prototype.onCreateTooltipSuccess = function(result) {
+    Tooltip.prototype.onLoadTooltipSuccess = function(result) {
         this.records = result;
         return this.records;
     };
 
-    Tooltip.prototype.onCreateTooltipError = function(error) {
+    Tooltip.prototype.onLoadTooltipError = function(error) {
         console.warn('ERROR', error);
         return error;
     };
 
-    Tooltip.prototype.create = function(data) {
+    Tooltip.prototype.load = function(data) {
         var self = this;
-        return this.xhrCreate({
+        return this.xhrLoad({
             entity: this.entity,
             payload: data,
-            success: this.onCreateTooltipSuccess.bind(self),
-            error: this.onCreateTooltipError.bind(self)
+            success: this.onLoadTooltipSuccess.bind(self),
+            error: this.onLoadTooltipError.bind(self)
         });
     };
 

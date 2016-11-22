@@ -10,6 +10,7 @@
 
         this.container = App.serviceContainer;
         this.rootView = option.rootView;
+        this.pagination = App.pagination;
         this.collection = {
             user: option.userCollection
         };
@@ -19,6 +20,7 @@
             collection: this.collection,
             blockEl: this
         });
+
 
         this.pagination = new App.View.Option.Pagination({
             collection: this.collection,

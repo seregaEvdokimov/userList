@@ -18,9 +18,12 @@ body {
 #app table {
     border: 1px solid #ccc;
     border-collapse: collapse;
+    display: block;
 }
 
+/*TODO fix width delete and edit cell*/
 #app table thead{
+    display: block;
     background: #333;
     color: #ddd;
 }
@@ -60,6 +63,12 @@ body {
     width: 8px;
     height: 8px;
     background-size: contain;
+}
+
+#app table tbody {
+    display: block;
+    height: 125px;
+    overflow: auto;
 }
 
 #app table tbody tr {

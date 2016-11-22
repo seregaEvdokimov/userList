@@ -12,8 +12,11 @@
         this.container = App.serviceContainer;
         this.collection = options.collection;
         this.tableEl = options.tableEl;
-        this.pagination = App.pagination;
         this.tRows = [];
+        this.sortConfig = {
+            param: 'id',
+            direction: 'asc'
+        };
 
         // components
         this.collection.user.forEach(function(item) {
@@ -40,7 +43,6 @@
         }
 
         var id = el.parentNode.parentNode.querySelector('.id').textContent;
-
         switch (el.className) {
             case 'edit-btn':
                 self.container.modalEdit.show(id);
@@ -51,7 +53,8 @@
         }
     };
 
-    Body.prototype.sort = function(config, result) {
+    Body.prototype.sort = function(result) {
+        var config = this.sortConfig;
         var sorted = result.sort(function(a, b) {
             var item1 = (config.param == 'date' || config.param == 'birth') ? new Date(a[config.param]).getTime() : a[config.param];
             var item2 = (config.param == 'date' || config.param == 'birth') ? new Date(b[config.param]).getTime() : b[config.param];
@@ -95,10 +98,9 @@
         user.delete(id).then(function(res) {
             if(res) {
                 self.tRows.splice(findRowIndx, 1);
-                self.container.pagination.afterCRUD();
-
                 findRow.destroy();
-                self.render();
+
+                self.container.pagination.refresh();
             }
         });
     };
@@ -124,26 +126,49 @@
         this.render();
     };
 
-    Body.prototype.render = function(config) {
-        this.el.innerHTML = '';
-        var fragment = document.createDocumentFragment();
-        var result = [];
+    Body.prototype.newRows = function(rows) {
+        var self = this;
+        var mapperExistingRows = {};
 
-        var start = (this.pagination.currentPage == 1) ? -1
-            : (this.pagination.currentPage * this.pagination.perPage) - this.pagination.perPage - 1;
+        this.tRows.forEach(function(item) {
+            mapperExistingRows[item.id] = true;
+        });
 
-        var limit = start + this.pagination.perPage;
-
-        this.tRows.forEach(function(row, index) {
-            row.stop();
-            if(index > start && index <= limit) {
-                result.push(row);
+        rows.forEach(function(item) {
+            if(!mapperExistingRows.hasOwnProperty(item.id)) {
+                var row = new App.View.UserTable.Body.Row({
+                    collection: item,
+                    tbodyEl: self
+                });
+                self.tRows.push(row);
             }
         });
 
-        if(config && config.type == 'sort') {
-            result = this.sort(config, result);
-        } else if(config && config.type == 'search') {
+        this.render();
+    };
+
+    Body.prototype.clearRows = function(newRows) {
+        this.tRows = this.tRows.reduce(function(acc, oldItem) {
+            var filtered = newRows.filter(function(newItem) {
+                return newItem.id == oldItem.id;
+            });
+
+            filtered.length
+                ? acc.push(oldItem)
+                : oldItem.destroy();
+
+            return acc;
+        }, []);
+    };
+
+    Body.prototype.render = function(config) {
+        if(config && config.type == 'sort') this.sortConfig = config;
+
+        this.el.innerHTML = '';
+        var fragment = document.createDocumentFragment();
+
+        var result = this.sort(this.tRows);
+        if(config && config.type == 'search') {
             result = this.search(config);
         }
 

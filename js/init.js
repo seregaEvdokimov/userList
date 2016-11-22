@@ -4,10 +4,14 @@
 
 (function(App, document) {
 
-    function initApp() { // TODO refactor ServiceContainer
+    function initApp() {
         var user = new App.Model.User();
+        var pagination = {
+            start: App.pagination.currentPage,
+            limit: App.pagination.perPage
+        };
 
-        user.load().then(function() {
+        user.load(pagination).then(function() {
             var view = new App.View({users: user.records});
             view.render();
         });
