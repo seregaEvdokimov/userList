@@ -36,9 +36,18 @@
         var el = event.target;
 
         if(el.tagName == 'DIV' && el.className == 'modal') {
-            this.el.style.visibility = 'hidden';
-            this.container.template.modalCreate.el.style.visibility = 'hidden';
-            this.container.template.modalEdit.el.style.visibility = 'hidden';
+            var create = this.container.template.modalCreate;
+            var edit = this.container.template.modalEdit;
+
+            if(create.isShow) {
+                create.hide();
+                create.clearForm();
+            }
+
+            if(edit.isShow) {
+                edit.needToSave();
+                edit.hide();
+            }
         }
     };
 

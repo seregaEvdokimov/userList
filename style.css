@@ -169,25 +169,28 @@ body {
 
 .modal {
     position: absolute;
-    top: 0;
     left: 0;
+    top: 0;
     background: rgba(0, 0, 0, .4);
     display: flex;
     justify-content: center;
-    align-items: center;
+    /*align-items: center;*/
     width: 100%;
     height: 100%;
 }
 
 .modal .modal-window {
     position: absolute;
+    top: 0;
     background: #333;
     padding: 20px;
     width: 430px;
     display: flex;
     justify-content: flex-start;
     align-items: flex-end;
-    flex-flow: row wrap
+    flex-flow: row wrap;
+    transform: translateY(-50%);
+    transition: all .65s;
 }
 
 .modal .modal-window .caption {

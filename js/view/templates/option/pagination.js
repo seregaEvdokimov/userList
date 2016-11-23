@@ -14,6 +14,8 @@
         this.container = App.serviceContainer;
         this.pagination = App.pagination;
         this.behaviourPagination = this.pagination.type;
+
+        // components
         this.event = App.Lib.Event;
 
         // lazyload

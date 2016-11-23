@@ -17,9 +17,9 @@
             param: 'id',
             direction: 'asc'
         };
-        this.event = App.Lib.Event;
 
         // components
+        this.event = App.Lib.Event;
         this.collection.user.forEach(function(item) {
             var row = new App.View.UserTable.Body.Row({
                 collection: item,

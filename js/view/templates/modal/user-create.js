@@ -14,9 +14,8 @@
         this.modalEl = option.modalEl;
         this.collection = option.collection;
         this.container = App.serviceContainer;
+        this.isShow = false;
         this.renderOrder = ['caption', 'avatar', 'name', 'email', 'birth', 'date', 'control'];
-        this.inputs = {};
-        this.CRUDType = 'create';
         this.fields = {
             caption: function(){
                 var captionElement = document.createElement('h3');
@@ -145,6 +144,8 @@
                 return groupInput;
             }
         };
+        this.inputs = {};
+        this.CRUDType = 'create';
         this.avatar = null;
 
         // components
@@ -166,6 +167,9 @@
 
         switch(el.className) {
             case 'cancel-btn':
+                if(this.CRUDType == 'create') self.clearForm();
+                if(this.CRUDType == 'update') self.needToSave();
+
                 self.hide();
                 break;
             case 'add-btn':
@@ -235,7 +239,9 @@
         valid = (valid) ? this.chekDate(dateTimeFinish) : false;
         if(!valid) return false;
 
-        this.send();
+        var pick = this.pickData();
+        if(pick.status) this.send(pick.data);
+        this.hide();
     };
 
     CreateUser.prototype.chekDate = function(data) {
@@ -247,9 +253,8 @@
         return result.valid;
     };
 
-    CreateUser.prototype.send = function() {
-        var self = this;
-
+    CreateUser.prototype.pickData = function() {
+        var status = true;
         var strTime = this.inputs.date.value + ' ' + this.inputs.time.value;
         var data = {
             id: (this.inputs.id) ? this.inputs.id.value : null,
@@ -260,31 +265,55 @@
             avatar: this.avatar
         };
 
-        var user = this.container.model.user;
-        user[self.CRUDType](data).then(function(res) {
-            (self.CRUDType == 'create')
-                ? self.container.template.userTableTbody.createRow(res)
-                : self.container.template.userTableTbody.updateRow(res);
+        if(this.CRUDType == 'update') {
+            status = this.compareData(data);
+        }
 
-            self.hide();
-            self.clearForm();
+        return {status: status, data: data};
+    };
+
+    CreateUser.prototype.send = function(data) {
+        var self = this;
+        var user = this.container.model.user;
+        user.create(data).then(function(res) {
+            self.container.template.userTableTbody.createRow(res);
         });
     };
 
-    CreateUser.prototype.clearForm = function() { // TODO clear form
-        console.log('clear form');
+    CreateUser.prototype.clearForm = function() {
+        for(var index in this.inputs) {
+            var input = this.inputs[index];
+
+            input.classList.remove('error');
+            input.classList.remove('success');
+            input.value = '';
+
+            if(index == 'avatar') {
+                var parent = input.parentNode;
+                var img = parent.querySelector('img');
+                if(img) parent.removeChild(img);
+            }
+        }
+
+        return true;
     };
 
     CreateUser.prototype.hide = function() {
-        this.modalEl.el.style.visibility = 'hidden';
         this.el.style.visibility = 'hidden';
+        this.el.style.top = '-50%';
+
+        this.modalEl.el.style.visibility = 'hidden';
+        this.isShow = false;
     };
 
     CreateUser.prototype.show = function(id) {
         if(id) this.loadData(id);
 
         this.modalEl.el.style.visibility = 'visible';
+
         this.el.style.visibility = 'visible';
+        this.el.style.top = '50%';
+        this.isShow = true;
     };
 
     CreateUser.prototype.render = function() {
