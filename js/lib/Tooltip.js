@@ -7,7 +7,7 @@
         this.el = document.createElement('div');
         this.el.className = 'tooltip';
         this.tooltipModel = new App.Model.Tooltip();
-        this.hover = false;
+        this.intervalId = null;
 
         this.types = {
             name: ['image', 'text'],
@@ -90,15 +90,12 @@
 
     Tooltip.prototype.create = function(type, id, cords) {
         var self = this;
-        this.hover = true;
 
-        setTimeout(function(){
-            if(self.hover) {
-                self.tooltipModel.load({id: id, type: type}).then(function(res) {
-                    self.render(type, res);
-                    self.show(cords);
-                });
-            }
+        this.intervalId = setTimeout(function(){
+            self.tooltipModel.load({id: id, type: type}).then(function(res) {
+                self.render(type, res);
+                self.show(cords);
+            });
         }, 500);
 
         return this;
@@ -111,7 +108,7 @@
             document.body.removeChild(item);
         });
 
-        this.hover = false;
+        clearInterval(this.intervalId);
     };
 
     Tooltip.prototype.render = function(type, data) {

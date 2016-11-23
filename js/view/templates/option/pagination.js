@@ -14,32 +14,37 @@
         this.container = App.serviceContainer;
         this.pagination = App.pagination;
         this.behaviourPagination = this.pagination.type;
+        this.event = App.Lib.Event;
+
+        // lazyload
+        this.count = 0;
+
+        // pagination
         this.pages = [];
 
-        // this.behaviourPagination == 'lazyLoad'
-        this.lazyInit();
-            // : this.paginationInit();
+        this.behaviourPagination == 'lazyLoad'
+            ? this.lazyInit()
+            : this.paginationInit();
 
         // put to container
-        App.serviceContainer.pagination = this;
+        App.serviceContainer.template.pagination = this;
     }
 
-    Pagination.prototype.refresh = function() {
-        // if(this.behaviourPagination == 'pagination') {
-        //     this.drawPages();
-        //
-        //     var start = (this.currentPage == 1) ? 1 : (this.currentPage * this.pagination.perPage) - this.pagination.perPage;
-        //     var limit = start + this.pagination.perPage;
-        //     this.getData(start, limit,this.loadData.bind(this));
-        // }
-    };
-
     Pagination.prototype.lazyInit = function() {
-        var tbody = this.container.userTableTbody;
-        tbody.el.addEventListener('scroll', this.lazyHandlerScroll.bind(this, tbody, this.loadData.bind(this)));
+        var self = this;
+        var table = this.container.template.userTable;
+        var tbody = this.container.template.userTableTbody;
+
+
+        this.container.model.user.load({count: true}).then(function(res) {
+            self.count = res.count;
+
+            table.el.classList.add('lazyLoad');
+            tbody.el.addEventListener('scroll', self.lazyHandlerScroll.bind(self, tbody, self.count, self.loadData.bind(self)));
+        });
     };
 
-    Pagination.prototype.lazyHandlerScroll = function(self, callback, event) {
+    Pagination.prototype.lazyHandlerScroll = function(self, count, callback, event) {
         var el = event.target;
         var currentScroll = self.el.scrollTop + self.el.clientHeight;
         var maxScroll = self.el.scrollHeight;
@@ -48,93 +53,136 @@
             var start = el.childNodes.length;
             var limit = start + App.pagination.perPage;
 
-            this.container.user.load({start: start, limit: limit}).then(callback);
+            if(start <= count) this.container.model.user.load({start: start, limit: limit}).then(callback);
         }
     };
 
-    // Pagination.prototype.paginationInit = function() {
-    //     this.drawPages();
-    //     this.el.addEventListener('click', this.changePage.bind(this, this, this.loadData.bind(this)));
-    // };
-    //
-    // Pagination.prototype.drawPages = function() {
-    //     var self = this;
-    //     this.currentPage = this.pagination.currentPage;
-    //
-    //     this.container.user.load({count: true}).then(function(res) {
-    //         var len = Math.ceil(res.count / self.pagination.perPage);
-    //         var fragment = document.createDocumentFragment();
-    //
-    //         if(len == 1) {
-    //             return this.el;
-    //         }
-    //
-    //         if(self.pages.length != len) {
-    //             self.pages = [];
-    //             self.el.innerHTML = '';
-    //
-    //             for(var i = 1; i <= len; i++) {
-    //                 var el = document.createElement('div');
-    //                 el.textContent = i;
-    //                 el.dataset.page = i;
-    //                 el.className = 'page';
-    //
-    //                 if(self.currentPage == i) {
-    //                     el.classList.add('active');
-    //                 }
-    //
-    //                 self.pages.push(el);
-    //                 fragment.appendChild(el);
-    //             }
-    //
-    //             self.el.appendChild(fragment);
-    //         }
-    //     });
-    // };
-    //
-    // Pagination.prototype.changePage = function(self, callback, event) {
-    //     var el = event.target;
-    //
-    //     if(!el.classList.contains('page')) {
-    //         return false;
-    //     }
-    //
-    //     var currentPage = el.dataset.page;
-    //     if(currentPage == this.currentPage) return false;
-    //
-    //     self.pages.forEach(function(item) {
-    //         item.classList.remove('active');
-    //         if(currentPage == item.dataset.page) {
-    //             item.classList.add('active');
-    //         }
-    //     });
-    //
-    //     this.pagination.currentPage = currentPage;
-    //     this.currentPage = currentPage;
-    //     var start = (currentPage == 1) ? 1 : (currentPage * self.pagination.perPage) - self.pagination.perPage;
-    //     var limit = start + self.pagination.perPage;
-    //
-    //     self.getData(start, limit, callback);
-    // };
-    //
-    // Pagination.prototype.getData = function(start, limit, callback) {
-    //     var self = this;
-    //     this.container.user.load({start: start, limit: limit}).then(function(res) {
-    //         if(!res.length && self.currentPage > 0) {
-    //             var page = self.pages[self.pages.length - 1];
-    //             page.click();
-    //             console.log(page);
-    //         }
-    //
-    //         callback(res);
-    //         self.container.userTableTbody.clearRows(res);
-    //     });
-    // };
+    Pagination.prototype.paginationInit = function() {
+        var self = this;
+        this.currentPage = this.pagination.currentPage;
 
+        this.calculateQuantityPages().then(function(res) {
+            self.drawPages(res.quantity);
+            self.backlightPage();
+
+            self.el.addEventListener('click', self.changePage.bind(self, self, self.loadData.bind(self)));
+        });
+
+        this.event.addListener('deleteRow', this.deleteRow.bind(this));
+        this.event.addListener('addRow', this.addRow.bind(this));
+    };
+
+    Pagination.prototype.deleteRow = function() {
+        var self = this;
+        this.calculateQuantityPages().then(function(res) {
+
+            if(res.mod === false) {
+                self.currentPage = self.currentPage == 1 ? 1
+                    : (self.currentPage == (res.quantity + 1)) ? res.quantity
+                    :  self.currentPage;
+
+                self.drawPages(res.quantity);
+                self.backlightPage();
+
+                var result = self.getStartAndLimitRecords();
+                self.getData(result.start, result.limit, self.loadData.bind(self));
+            }
+        });
+    };
+
+    Pagination.prototype.addRow = function() {
+        var self = this;
+        this.calculateQuantityPages().then(function(res) {
+
+            self.currentPage = res.quantity;
+            self.drawPages(res.quantity);
+            self.backlightPage();
+
+            var result = self.getStartAndLimitRecords();
+            self.getData(result.start, result.limit, self.loadData.bind(self));
+        });
+    };
+
+    Pagination.prototype.calculateQuantityPages = function() {
+        var self = this;
+        return this.container.model.user.load({count: true}).then(function(res){
+
+            var out = {};
+            if(res.count % self.pagination.perPage == 0) {
+                out.quantity = res.count / self.pagination.perPage;
+                out.mod = false;
+            } else {
+                out.quantity =  Math.ceil(res.count / self.pagination.perPage);
+                out.mod = true;
+            }
+
+            return out;
+        });
+    };
+
+    Pagination.prototype.drawPages = function(quantity) {
+        var fragment = document.createDocumentFragment();
+
+        if(this.pages.length != quantity) {
+            this.pages = [];
+            this.el.innerHTML = '';
+
+            for(var i = 1; i <= quantity; i++) {
+                var el = document.createElement('div');
+                el.textContent = i;
+                el.dataset.page = i;
+                el.className = 'page';
+
+                this.pages.push(el);
+                fragment.appendChild(el);
+            }
+            this.el.appendChild(fragment);
+        }
+    };
+
+    Pagination.prototype.backlightPage = function() {
+        var self = this;
+        this.pages.forEach(function(page) {
+            var pageNum = page.dataset.page;
+            page.classList.remove('active');
+            if(pageNum == self.currentPage) page.classList.add('active');
+        });
+    };
+
+    Pagination.prototype.changePage = function(self, callback, event) {
+        var el = event.target;
+
+        if(!el.classList.contains('page')) return false;
+
+        var currentPage = el.dataset.page;
+        if(currentPage == this.currentPage) return false;
+
+        this.currentPage = currentPage;
+        self.backlightPage();
+
+        var result = self.getStartAndLimitRecords();
+        self.getData(result.start, result.limit, callback);
+    };
+
+    Pagination.prototype.getStartAndLimitRecords = function() {
+        var start = (this.currentPage == 1) ? 0
+            : (this.currentPage * this.pagination.perPage) - this.pagination.perPage;
+
+        var limit = start + this.pagination.perPage;
+        return {start: start, limit: limit};
+    };
+
+    Pagination.prototype.getData = function(start, limit, callback) {
+        var self = this;
+        this.container.model.user.load({start: start, limit: limit}).then(function(res) {
+            callback(res);
+            self.container.template.userTableTbody.clearRows(res);
+        });
+    };
 
     Pagination.prototype.loadData = function(res) {
-        var tbody = this.container.userTableTbody;
-        tbody.newRows(res);
+        var tbody = this.container.template.userTableTbody;
+        if(res.length) tbody.newRows(res);
     };
 
 

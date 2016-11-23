@@ -9,7 +9,7 @@
         this.container = App.serviceContainer;
 
         // put to container
-        App.serviceContainer.tooltip = this;
+        App.serviceContainer.model.tooltip = this;
     }
 
     Tooltip.prototype = new App.Model();
@@ -24,7 +24,7 @@
         return error;
     };
 
-    Tooltip.prototype.load = function(data) {
+    Tooltip.prototype.load = function(data) { // TODO change method request to get
         var self = this;
         return this.xhrLoad({
             entity: this.entity,

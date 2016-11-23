@@ -70,7 +70,7 @@
         this.el.addEventListener('click', this.handlerSort.bind(this, this));
 
         // put to container
-        App.serviceContainer.userTableThead = this;
+        App.serviceContainer.template.userTableThead = this;
     }
 
     Head.prototype.handlerSort = function(self, event) {
@@ -106,7 +106,7 @@
     };
 
     Head.prototype.sortCollection = function(direction, param) {
-        var tBody = this.container.userTableTbody;
+        var tBody = this.container.template.userTableTbody;
         tBody.render({type: 'sort', direction: direction, param: param});
     };
 

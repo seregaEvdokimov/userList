@@ -22,8 +22,21 @@ body {
 }
 
 /*TODO fix width delete and edit cell*/
-#app table thead{
+#app table.lazyLoad {
     display: block;
+}
+
+#app table.lazyLoad tbody {
+    display: block;
+    height: 200px;
+    overflow: auto;
+}
+
+#app table.lazyLoad thead {
+    display: block;
+}
+
+#app table thead{
     background: #333;
     color: #ddd;
 }
@@ -66,9 +79,7 @@ body {
 }
 
 #app table tbody {
-    display: block;
-    height: 125px;
-    overflow: auto;
+
 }
 
 #app table tbody tr {
@@ -130,6 +141,7 @@ body {
     overflow: hidden;
 }
 
+
 .date .overlay {
     position: absolute;
     top: 0;
@@ -145,13 +157,13 @@ body {
     background: rgba(255, 80, 80, .4);
 }
 
-.del {
-    width: 100px;
+.del, .delete {
+    width: 130px;
     padding: 0 !important;
 }
 
 .edit {
-    width: 100px;
+    width: 130px;
     padding: 0 !important;
 }
 
@@ -173,7 +185,7 @@ body {
     padding: 20px;
     width: 430px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-end;
     flex-flow: row wrap
 }
@@ -190,7 +202,6 @@ body {
 }
 
 .modal .modal-window .avatar-group img{
-    width: 195px;
     display: block;
     margin-bottom: 10px;
 }
@@ -341,7 +352,6 @@ body {
 }
 
 .tooltip-name {
-    width: 150px;
     background: #333;
 }
 
@@ -349,10 +359,12 @@ body {
     text-align: center;
     color: #fff;
     padding: 10px 5px;
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .tooltip-name img {
+    display: table;
+    margin: 0 auto;
     max-width: 100%;
 }
 

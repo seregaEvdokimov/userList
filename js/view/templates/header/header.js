@@ -20,7 +20,7 @@
         });
 
         // put to container
-        App.serviceContainer.header = this;
+        App.serviceContainer.template.header = this;
     }
 
     Header.prototype.render = function() {

@@ -11,7 +11,7 @@
         this.collection = option.collection;
 
         // put to container
-        App.serviceContainer.search = this;
+        App.serviceContainer.template.search = this;
     }
 
     Search.prototype.handlerSearch = function(self, event) {

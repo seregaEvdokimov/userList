@@ -26,9 +26,10 @@ app.post('/user', function (req, res) {
             console.log(data);
             var users = JSON.parse(data);
             var model = req.body;
-            var maxId = users.length + 1;
 
-            model["id"] = maxId;
+            var uniqId = parseInt(users[users.length - 1].id) + 1;
+
+            model["id"] = uniqId;
 
             users.push(model);
             model = JSON.stringify(model);

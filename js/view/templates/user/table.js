@@ -30,7 +30,7 @@
         this.el.addEventListener('mouseover', this.handlerTooltip.bind(this, this));
 
         // put to container
-        App.serviceContainer.userTable = this;
+        App.serviceContainer.template.userTable = this;
     }
 
     Table.prototype.handlerTooltip = function(self, event) {

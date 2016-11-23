@@ -22,7 +22,7 @@
         };
 
         // put to container
-        App.serviceContainer.modalEdit = this;
+        App.serviceContainer.template.modalEdit = this;
     }
 
     EditUser.prototype = Object.create(App.View.Modal.CreateUser.prototype);
@@ -32,7 +32,18 @@
             return item.id == id;
         });
 
+        var avatarContainer = this.inputs.avatar.parentNode;
+        var images = avatarContainer.querySelector('img');
+
+        var avatar = document.createElement('img');
+        avatar.setAttribute('src', find[0].avatar);
+
+        images
+            ? images.replaceWith(avatar)
+            : avatarContainer.insertBefore(avatar, this.inputs.avatar);
+
         this.inputs.id.value = find[0].id;
+        this.inputs.avatar.dataset.img = find[0].avatar;
         this.inputs.name.value = find[0].name;
         this.inputs.email.value = find[0].email;
         this.inputs.birth.valueAsNumber = new Date(find[0].birth).getTime();

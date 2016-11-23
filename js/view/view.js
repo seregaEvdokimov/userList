@@ -32,7 +32,7 @@
         document.addEventListener('keydown', this.handlerKeyPress.bind(this, this));
 
         // put to container
-        App.serviceContainer.view = this;
+        App.serviceContainer.template.rootView = this;
     }
 
     View.prototype.handlerKeyPress = function(self, event) {

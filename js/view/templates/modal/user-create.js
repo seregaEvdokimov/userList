@@ -154,7 +154,7 @@
         this.el.addEventListener('click', this.handlerControlBtn.bind(this, this));
 
         // put to container
-        App.serviceContainer.modalCreate = this;
+        App.serviceContainer.template.modalCreate = this;
     }
 
     CreateUser.prototype.handlerControlBtn = function(self, event) {
@@ -260,15 +260,19 @@
             avatar: this.avatar
         };
 
-        var user = this.container.user;
+        var user = this.container.model.user;
         user[self.CRUDType](data).then(function(res) {
-            self.container.pagination.refresh();
             (self.CRUDType == 'create')
-                ? self.container.userTableTbody.createRow(res)
-                : self.container.userTableTbody.updateRow(res);
+                ? self.container.template.userTableTbody.createRow(res)
+                : self.container.template.userTableTbody.updateRow(res);
 
             self.hide();
+            self.clearForm();
         });
+    };
+
+    CreateUser.prototype.clearForm = function() { // TODO clear form
+        console.log('clear form');
     };
 
     CreateUser.prototype.hide = function() {

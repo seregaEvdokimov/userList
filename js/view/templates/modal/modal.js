@@ -15,12 +15,12 @@
         };
 
         // components
-        this.modalCreate = new App.View.Modal.CreateUser({
+        this.modalEdit = new App.View.Modal.EditUser({
             collection: this.collection,
             modalEl: this
         });
 
-        this.modalEdit = new App.View.Modal.EditUser({
+        this.modalCreate = new App.View.Modal.CreateUser({
             collection: this.collection,
             modalEl: this
         });
@@ -29,7 +29,7 @@
         this.el.addEventListener('click', this.hideAllModal.bind(this, this));
 
         // put to container
-        App.serviceContainer.modalWindow = this;
+        App.serviceContainer.template.modalWindow = this;
     }
 
     Modal.prototype.hideAllModal = function(self, event) {
@@ -37,8 +37,8 @@
 
         if(el.tagName == 'DIV' && el.className == 'modal') {
             this.el.style.visibility = 'hidden';
-            this.container.modalCreate.el.style.visibility = 'hidden';
-            this.container.modalEdit.el.style.visibility = 'hidden';
+            this.container.template.modalCreate.el.style.visibility = 'hidden';
+            this.container.template.modalEdit.el.style.visibility = 'hidden';
         }
     };
 

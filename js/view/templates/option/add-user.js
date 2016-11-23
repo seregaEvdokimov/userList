@@ -19,11 +19,11 @@
         this.el.addEventListener('click', this.showModal.bind(this, this));
 
         // put to container
-        App.serviceContainer.addUser = this;
+        App.serviceContainer.template.addUser = this;
     }
 
     AddUser.prototype.showModal = function(self, event) {
-        self.container.modalCreate.show();
+        self.container.template.modalCreate.show();
     };
 
     AddUser.prototype.render = function() {

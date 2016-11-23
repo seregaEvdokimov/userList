@@ -17,6 +17,7 @@
             param: 'id',
             direction: 'asc'
         };
+        this.event = App.Lib.Event;
 
         // components
         this.collection.user.forEach(function(item) {
@@ -32,7 +33,7 @@
         this.el.addEventListener('click', this.handlerModal.bind(this, this));
 
         // put to container
-        App.serviceContainer.userTableTbody = this;
+        App.serviceContainer.template.userTableTbody = this;
     }
 
     Body.prototype.handlerModal = function(self, event) {
@@ -45,7 +46,7 @@
         var id = el.parentNode.parentNode.querySelector('.id').textContent;
         switch (el.className) {
             case 'edit-btn':
-                self.container.modalEdit.show(id);
+                self.container.template.modalEdit.show(id);
                 break;
             case 'delete-btn':
                 self.removeRow(id);
@@ -83,7 +84,7 @@
 
     Body.prototype.removeRow = function(id) {
         var self = this;
-        var user = this.container.user;
+        var user = this.container.model.user;
 
         var findRow;
         var findRowIndx;
@@ -95,35 +96,22 @@
             }
         });
 
-        user.delete(id).then(function(res) {
-            if(res) {
-                self.tRows.splice(findRowIndx, 1);
-                findRow.destroy();
+        user.delete(id).then(function() {
+            self.tRows.splice(findRowIndx, 1);
+            findRow.destroy();
 
-                self.container.pagination.refresh();
-            }
+            self.event.dispatch('deleteRow');
         });
     };
 
     Body.prototype.updateRow = function(res) {
-        var row;
         this.tRows.forEach(function(item) {
-            if(item.id == res.id) {
-                row = item;
-            }
+            if(item.id == res.id) item.update(res);
         });
-
-        row.update(res);
     };
 
-    Body.prototype.createRow = function(res) {
-        var row = new App.View.UserTable.Body.Row({
-            collection: res,
-            tbodyEl: this
-        });
-
-        this.tRows.push(row);
-        this.render();
+    Body.prototype.createRow = function() {
+        this.event.dispatch('addRow');
     };
 
     Body.prototype.newRows = function(rows) {

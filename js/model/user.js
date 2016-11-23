@@ -9,7 +9,7 @@
         this.container = App.serviceContainer;
 
         // put to container
-        App.serviceContainer.user = this;
+        App.serviceContainer.model.user = this;
     }
 
     User.prototype = new App.Model();

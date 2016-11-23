@@ -9,11 +9,15 @@
         Model: {},
         Lib: {},
         View: {},
-        serviceContainer: {},
+        serviceContainer: {
+            template: {},
+            lib: {},
+            model: {}
+        },
         pagination: {
-            type: 'lazyLoad', //pagination
+            type: 'lazyLoad', //  pagination
             currentPage: 1,
-            perPage: 6
+            perPage: 8
         }
     };
 

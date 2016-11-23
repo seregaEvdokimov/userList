@@ -13,8 +13,10 @@
         },
 
         checkImage: function(node) {
-            var fileList = node.files;
+            var nameImg = node.dataset.img;
+            if(nameImg) return {valid: true, className: 'success'};
 
+            var fileList = node.files;
             if(!fileList[0]) return {valid: false, className: 'error'};
 
             var type = fileList[0].type;
@@ -58,5 +60,6 @@
         }
     };
 
+    App.serviceContainer.lib.validator = Validator;
     App.Lib.Validator = Validator;
 })(App);

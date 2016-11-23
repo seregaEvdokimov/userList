@@ -30,7 +30,7 @@
         // listeners
 
         // put to container
-        App.serviceContainer.optionBlock = this;
+        App.serviceContainer.template.optionBlock = this;
     }
 
     Option.prototype.render = function() {
