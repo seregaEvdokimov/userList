@@ -25,6 +25,10 @@
             modalEl: this
         });
 
+        this.modalConfirm = new App.View.Modal.Confirm({
+            text: 'Есть изменения. Сохранить?'
+        });
+
         // listeners
         this.el.addEventListener('click', this.hideAllModal.bind(this, this));
 
@@ -39,21 +43,15 @@
             var create = this.container.template.modalCreate;
             var edit = this.container.template.modalEdit;
 
-            if(create.isShow) {
-                create.hide();
-                create.clearForm();
-            }
-
-            if(edit.isShow) {
-                edit.needToSave();
-                edit.hide();
-            }
+            if(create.isShow) create.beforeHide('cancel');
+            if(edit.isShow) edit.beforeHide('cancel');
         }
     };
 
     Modal.prototype.render = function() {
         this.el.appendChild(this.modalCreate.render());
         this.el.appendChild(this.modalEdit.render());
+        this.el.appendChild(this.modalConfirm.render());
         return this.el;
     };
 

@@ -16,7 +16,7 @@
 
     Search.prototype.handlerSearch = function(self, event) {
         var searchStr = self.el.querySelector('input').value;
-        self.container.userTableTbody.render({type: 'search', find: searchStr});
+        self.container.template.userTableTbody.render({type: 'search', find: searchStr});
     };
 
     Search.prototype.render = function() {

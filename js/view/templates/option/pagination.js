@@ -55,7 +55,7 @@
             var start = el.childNodes.length;
             var limit = start + App.pagination.perPage;
 
-            if(start <= count) this.container.model.user.load({start: start, limit: limit}).then(callback);
+            if(start < count) this.container.model.user.load({start: start, limit: limit}).then(callback);
         }
     };
 

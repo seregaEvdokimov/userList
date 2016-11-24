@@ -24,7 +24,7 @@
         return error;
     };
 
-    Tooltip.prototype.load = function(data) { // TODO change method request to get
+    Tooltip.prototype.load = function(data) {
         var self = this;
         return this.xhrLoad({
             entity: this.entity,

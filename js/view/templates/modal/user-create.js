@@ -9,7 +9,6 @@
 
         this.el = document.createElement('div');
         this.el.className = 'modal-window modal-create';
-        this.el.style.visibility = 'hidden';
 
         this.modalEl = option.modalEl;
         this.collection = option.collection;
@@ -145,7 +144,6 @@
             }
         };
         this.inputs = {};
-        this.CRUDType = 'create';
         this.avatar = null;
 
         // components
@@ -167,10 +165,7 @@
 
         switch(el.className) {
             case 'cancel-btn':
-                if(this.CRUDType == 'create') self.clearForm();
-                if(this.CRUDType == 'update') self.needToSave();
-
-                self.hide();
+                self.beforeHide('cancel');
                 break;
             case 'add-btn':
                 self.chekForm();
@@ -240,8 +235,8 @@
         if(!valid) return false;
 
         var pick = this.pickData();
-        if(pick.status) this.send(pick.data);
-        this.hide();
+        this.send(pick);
+        this.beforeHide('save');
     };
 
     CreateUser.prototype.chekDate = function(data) {
@@ -254,7 +249,6 @@
     };
 
     CreateUser.prototype.pickData = function() {
-        var status = true;
         var strTime = this.inputs.date.value + ' ' + this.inputs.time.value;
         var data = {
             id: (this.inputs.id) ? this.inputs.id.value : null,
@@ -265,11 +259,7 @@
             avatar: this.avatar
         };
 
-        if(this.CRUDType == 'update') {
-            status = this.compareData(data);
-        }
-
-        return {status: status, data: data};
+        return data;
     };
 
     CreateUser.prototype.send = function(data) {
@@ -280,7 +270,7 @@
         });
     };
 
-    CreateUser.prototype.clearForm = function() {
+    CreateUser.prototype.beforeHide = function(status) {
         for(var index in this.inputs) {
             var input = this.inputs[index];
 
@@ -295,24 +285,20 @@
             }
         }
 
-        return true;
+        this.hide();
     };
 
     CreateUser.prototype.hide = function() {
-        this.el.style.visibility = 'hidden';
-        this.el.style.top = '-50%';
-
         this.modalEl.el.style.visibility = 'hidden';
+        this.el.classList.toggle("show", false);
         this.isShow = false;
     };
 
     CreateUser.prototype.show = function(id) {
         if(id) this.loadData(id);
 
+        this.el.classList.toggle("show", true);
         this.modalEl.el.style.visibility = 'visible';
-
-        this.el.style.visibility = 'visible';
-        this.el.style.top = '50%';
         this.isShow = true;
     };
 

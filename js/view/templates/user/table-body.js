@@ -97,10 +97,13 @@
         });
 
         user.delete(id).then(function() {
-            self.tRows.splice(findRowIndx, 1);
-            findRow.destroy();
+            findRow.el.classList.add('deleting');
 
-            self.event.dispatch('deleteRow');
+            setTimeout(function() {
+                self.tRows.splice(findRowIndx, 1);
+                findRow.destroy();
+                self.event.dispatch('deleteRow');
+            }, 350);
         });
     };
 

@@ -9,7 +9,6 @@
         App.View.Modal.CreateUser.call(this, option);
 
         this.el.className = 'modal-window modal-edit';
-        this.CRUDType = 'update';
         this.findItem = [];
         this.renderOrder.push('id');
         this.fields.id = function() {
@@ -22,7 +21,11 @@
             return nameInput;
         };
 
+        // components
+        this.event = App.Lib.Event;
+
         // listeners
+        this.event.addListener('makeChoice', this.makeChoice.bind(this));
 
         // put to container
         App.serviceContainer.template.modalEdit = this;
@@ -54,7 +57,7 @@
         this.inputs.email.value = this.findItem.email;
         this.inputs.birth.valueAsNumber = new Date(this.findItem.birth).getTime();
         this.inputs.date.valueAsNumber = new Date(this.findItem.date).getTime();
-        this.inputs.time.valueAsNumber = new Date(this.findItem.date).getTime();
+        this.inputs.time.valueAsNumber = new Date(this.findItem.date).getTime() + 10800000; // + 3 hours
     };
 
     EditUser.prototype.compareData = function(data) {
@@ -73,15 +76,36 @@
         return toUpdate;
     };
 
-    EditUser.prototype.needToSave = function() {
-        var pick = this.pickData();
-        if(pick.status) {
-            var res = confirm('Некоторые данные не сохранены. Сохранить?');
-            if(res) this.send(pick.data);
+    EditUser.prototype.beforeHide = function(status) {
+        if(status == 'cancel') {
+            var data = this.pickData();
+            var toUpdate = this.compareData(data);
+
+            if(toUpdate) {
+                this.el.classList.add("disable");
+                this.container.template.modalConfirm.confirm();
+            } else {
+                this.hide();
+            }
+        } else {
+            this.hide();
         }
     };
 
+    EditUser.prototype.makeChoice = function(status) {
+        this.el.classList.remove("disable");
+        if(status) {
+            var data = this.pickData();
+            this.send(data);
+        }
+
+        this.hide();
+    };
+
     EditUser.prototype.send = function(data) {
+        var status = this.compareData(data);
+        if(!status) return false;
+
         var self = this;
         var user = this.container.model.user;
         user.update(data).then(function(res) {
