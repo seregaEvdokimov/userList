@@ -28,6 +28,12 @@
             rootView: this
         });
 
+        this.notifyBlock = new App.View.Notify({
+            userCollection: collection.users,
+            rootView: this
+        });
+
+
         // listeners
         document.addEventListener('keydown', this.handlerKeyPress.bind(this, this));
 
@@ -48,6 +54,7 @@
         App.container.appendChild(this.usersTable.render());
         App.container.appendChild(this.modalWindow.render());
         App.container.appendChild(this.optionBlock.render());
+        App.container.appendChild(this.notifyBlock.render());
     };
 
     App.View = View;

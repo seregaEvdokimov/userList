@@ -13,7 +13,11 @@
     "body-parser": "^1.15.2",
     "del": "^2.2.2",
     "express": "4.14.0",
+    "faker": "^3.1.0",
     "jshint": "^2.9.2",
     "jshint-stylish": "^2.2.1"
+  },
+  "dependencies": {
+    "socket.io": "^1.6.0"
   }
 }

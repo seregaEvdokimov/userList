@@ -30,18 +30,17 @@
         });
 
         // listeners
-        this.el.addEventListener('click', this.handlerModal.bind(this, this));
+        this.el.addEventListener('click', this.handlerCotrolsBtn.bind(this, this));
+        this.el.addEventListener('transitionend', this.transitionend.bind(this, this));
 
         // put to container
         App.serviceContainer.template.userTableTbody = this;
     }
 
-    Body.prototype.handlerModal = function(self, event) {
+    Body.prototype.handlerCotrolsBtn = function(self, event) {
         var el = event.target;
 
-        if(el.tagName != 'A') {
-            return false;
-        }
+        if(el.tagName != 'A') return false;
 
         var id = el.parentNode.parentNode.querySelector('.id').textContent;
         switch (el.className) {
@@ -49,7 +48,20 @@
                 self.container.template.modalEdit.show(id);
                 break;
             case 'delete-btn':
-                self.removeRow(id);
+                self.tRows.forEach(function(row) {
+                    if(row.id == id) row.el.classList.add('deleting');
+                });
+                break;
+        }
+    };
+
+    Body.prototype.transitionend = function (self, event) {
+        var el = event.target;
+        var className = el.className;
+
+        switch (className) {
+            case 'deleting':
+                self.removeRow(el);
                 break;
         }
     };
@@ -82,28 +94,18 @@
         return find;
     };
 
-    Body.prototype.removeRow = function(id) {
+    Body.prototype.removeRow = function(row) {
         var self = this;
         var user = this.container.model.user;
+        var id = row.querySelector('.id').textContent;
 
-        var findRow;
-        var findRowIndx;
-
-        this.tRows.forEach(function(row, index) {
-            if(row.id == id) {
-                findRow = row;
-                findRowIndx = index;
-            }
-        });
+        self.tRows = self.tRows.reduce(function(acc, item) {
+            item.el.className != 'deleting' ? acc.push(item) :  item.destroy();
+            return acc;
+        }, []);
 
         user.delete(id).then(function() {
-            findRow.el.classList.add('deleting');
-
-            setTimeout(function() {
-                self.tRows.splice(findRowIndx, 1);
-                findRow.destroy();
-                self.event.dispatch('deleteRow');
-            }, 350);
+            self.event.dispatch('deleteRow');
         });
     };
 
@@ -113,7 +115,20 @@
         });
     };
 
-    Body.prototype.createRow = function() {
+    Body.prototype.createRow = function(res) {
+        var row = new App.View.UserTable.Body.Row({
+            collection: res,
+            tbodyEl: this
+        });
+
+        row.el.classList.add('addition');
+        this.tRows.push(row);
+        this.el.insertBefore(row.init(), this.el.firstChild);
+
+        setTimeout(function() {
+            row.el.classList.remove('addition');
+        }, 100);
+
         this.event.dispatch('addRow');
     };
 

@@ -1,16 +1,19 @@
 /**
  * Created by s.evdokimov on 08.11.2016.
  */
-var express = require('express');
-var app = express();
+var app = require('express')();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 var fs = require("fs");
+var faker = require("faker");
 
+server.listen(4000);
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
 var siteUrl = "http://localhost:63342";
 var pathToUsersList = "data/users.json";
-
 
 app.options('/*', function (req, res) {
     addResponseHeaders(res);
@@ -173,6 +176,21 @@ function addResponseHeaders(obj) {
     obj.header('Access-Control-Allow-Headers', 'Content-Type');
 }
 
-var server = app.listen(4000, function () {
-    console.log("Example app listening at http://localhost:4000")
+// fields: name(first, last), email, created_at, deleted_at
+io.on('connection', function(socket) {
+    console.log('connect');
+
+    setInterval(function() {
+
+        var user = {
+            id: null,
+            name: faker.name.findName(),
+            email: faker.internet.email(),
+            date: faker.date.future(),
+            birth: faker.date.recent(),
+            avatar: faker.image.avatar()
+        };
+
+        socket.emit('new user', user);
+    }, 60000);
 });

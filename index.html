@@ -44,8 +44,22 @@
 <script src="js/view/templates/option/option.js"></script>
 <script src="js/view/templates/option/add-user.js"></script>
 <script src="js/view/templates/option/pagination.js"></script>
+<script src="js/view/templates/notify/notify.js"></script>
+<script src="js/view/templates/notify/notify-item.js"></script>
 
     <!--init-->
 <script src="js/init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.6.0/socket.io.js"></script>
+    <script>
+        var socket = io('http://localhost:4000/');
+        socket.on('new user', function (data) {
+            console.log('socket', data);
+
+            var str = 'Добавлен пользователь: ' + data.name;
+            App.serviceContainer.template.notify.create(str);
+            App.serviceContainer.template.modalCreate.send(data);
+//            socket.emit('my other event', { my: 'data' });
+        });
+    </script>
 </body>
 </html>

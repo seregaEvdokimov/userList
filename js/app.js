@@ -4,7 +4,7 @@
 
 (function (w) {
 
-    w.App = {
+    w.App = { // TODO render app into App.container
         container: null,
         Model: {},
         Lib: {},
@@ -15,7 +15,7 @@
             model: {}
         },
         pagination: {
-            type: 'lazyLoad', //  pagination
+            type: 'lazyLoad', // pagination
             currentPage: 1,
             perPage: 8
         }
