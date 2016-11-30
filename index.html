@@ -52,21 +52,32 @@
 
     <!--init-->
 <script src="js/init.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.6.0/socket.io.js"></script>
+<script src="js/worker.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.6.0/socket.io.js"></script>-->
     <script>
-        var socket = io('http://localhost:4000/');
-        App.socket = socket;
+        var worker = new SharedWorker('js/worker.js');
+        worker.port.addEventListener("message", function(e) {
+            var data = JSON.parse(e.data);
+            console.log('worker say: ' + data.type);
+            switch (data.type) {
+                case 'connect':
+                    console.info('connect');
+                    break;
+                case 'new user':
+                    App.serviceContainer.template.notify.create(data.payload, 'createUser');
+                    App.serviceContainer.template.userTableTbody.createRow(data.payload);
+                    break;
+                case 'time passed':
+                    data.payload.forEach(function(item) {
+                        App.serviceContainer.template.notify.create(item, 'timePassed');
+                    });
+                    break;
+            }
+        }, false);
 
-        socket.on('new user', function (user) {
-            App.serviceContainer.template.notify.create(user, 'createUser');
-            App.serviceContainer.template.userTableTbody.createRow(user);
-        });
-
-        socket.on('time passed', function(result){
-            result.forEach(function(item) {
-                App.serviceContainer.template.notify.create(item, 'timePassed');
-            });
-        });
+        worker.port.start();
+//        worker.port.postMessage("connect");
+        console.log('worker', worker);
     </script>
 </body>
 </html>

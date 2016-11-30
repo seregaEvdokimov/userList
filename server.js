@@ -1,7 +1,6 @@
 /**
  * Created by s.evdokimov on 08.11.2016.
  */
-
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
@@ -231,10 +230,11 @@ function clearUpdateIntervals() {
 
 io.on('connection', function(socket) {
     console.log('connect');
+    socket.emit('connect');
     checkForUpdates(socket);
 
     socket.on('disconnect', function () {
-        console.log('disconnect');
         clearUpdateIntervals();
+        console.log('disconnect');
     });
 });

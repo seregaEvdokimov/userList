@@ -61,12 +61,8 @@
     };
 
     View.prototype.localization = function() {
-        var self = this;
         var ast = this.createAST(App.container);
-
-        ast.children.forEach(function(item) {
-            self.translate(item, '');
-        });
+        this.translate(ast, '');
 
         return true;
     };
