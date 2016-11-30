@@ -9,6 +9,8 @@
         Model: {},
         Lib: {},
         View: {},
+        currentLanguage: 'ru',
+        showNotify: true,
         serviceContainer: {
             template: {},
             lib: {},

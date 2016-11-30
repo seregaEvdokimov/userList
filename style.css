@@ -309,7 +309,7 @@ body {
     padding: 10px 10px;
     font-size: 14px;
     margin: 0 5px;
-    width: 105px;
+    min-width: 105px;
     cursor: pointer;
 }
 
@@ -373,6 +373,46 @@ body {
     padding: 5px 0;
     border: 0;
     width: 100px;
+}
+
+.header .switch-notify {
+    display: inline-block;
+    float: left;
+}
+
+.header .switch-notify input {
+    position: relative;
+    top: 2px;
+    margin: 0 5px;
+}
+
+.header .switch-notify label {
+    color: #333;
+    font-size: 14px;
+    display: inline-block;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.header .languages-wrapper {
+    display: inline-block;
+    float: left;
+    margin-left: 245px;
+}
+
+.header .languages-wrapper a {
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin: 0 3px;
+    padding: 6px;
+    display: inline-block;
+}
+
+.header .languages-wrapper a.active {
+    background: #333;
+    color: #eee;
 }
 
 .tooltip {

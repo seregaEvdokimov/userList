@@ -9,138 +9,143 @@
 
         this.el = document.createElement('div');
         this.el.className = 'modal-window modal-create';
-
+        this.el.dataset.languageKey = 'create';
         this.modalEl = option.modalEl;
         this.collection = option.collection;
         this.container = App.serviceContainer;
+        this.modalType = 'create';
         this.isShow = false;
+        this.dictionary = this.container.lib.dictionary;
+        this.nodes = {};
         this.renderOrder = ['caption', 'avatar', 'name', 'email', 'birth', 'date', 'control'];
         this.fields = {
             caption: function(){
-                var captionElement = document.createElement('h3');
-                captionElement.className = 'caption';
-                captionElement.textContent = 'Add New Client';
-                return captionElement;
+                self.nodes.caption = document.createElement('h3');
+                self.nodes.caption.className = 'caption';
+                self.nodes.caption.dataset.languageKey = 'caption';
+                self.nodes.caption.textContent = self.dictionary.t(['modal', self.modalType, 'caption']);
+                return self.nodes.caption;
             },
             avatar: function(){
-                var groupInput = document.createElement('div');
-                groupInput.className = 'group avatar-group';
+                self.nodes.avatar = document.createElement('div');
+                self.nodes.avatar.className = 'group avatar-group';
 
                 var nameLabel = document.createElement('label');
-                nameLabel.textContent = 'Upload Avatar';
+                nameLabel.dataset.languageKey = 'avatar';
+                nameLabel.textContent = self.dictionary.t(['modal', self.modalType, 'avatar']);
                 nameLabel.className = 'avatar-label';
 
                 var nameInput = document.createElement('input');
                 nameInput.setAttribute('type', 'file');
-                nameInput.setAttribute('name', 'avatar');
-                nameInput.dataset.validType = 'file';
+                nameInput.setAttribute('name', 'avatar')
                 nameInput.addEventListener('change', self.imageUpload.bind(self, self));
                 nameInput.className = 'file-input';
                 self.inputs.avatar = nameInput;
 
-                groupInput.appendChild(nameLabel);
-                groupInput.appendChild(nameInput);
-                return groupInput;
+                self.nodes.avatar.appendChild(nameLabel);
+                self.nodes.avatar.appendChild(nameInput);
+                return self.nodes.avatar;
             },
             name: function(){
-                var groupInput = document.createElement('div');
-                groupInput.className = 'group name-group';
+                self.nodes.name = document.createElement('div');
+                self.nodes.name.className = 'group name-group';
 
                 var nameLabel = document.createElement('label');
-                nameLabel.textContent = 'Enter Name';
+                nameLabel.dataset.languageKey = 'name';
+                nameLabel.textContent = self.dictionary.t(['modal', self.modalType, 'name']);
                 nameLabel.className = 'name-label';
 
                 var nameInput = document.createElement('input');
                 nameInput.setAttribute('type', 'text');
                 nameInput.setAttribute('name', 'name');
-                nameInput.dataset.validType = 'name';
                 nameInput.className = 'name-input';
                 self.inputs.name = nameInput;
 
-                groupInput.appendChild(nameLabel);
-                groupInput.appendChild(nameInput);
-                return groupInput;
+                self.nodes.name.appendChild(nameLabel);
+                self.nodes.name.appendChild(nameInput);
+                return self.nodes.name;
             },
             email: function(){
-                var groupInput = document.createElement('div');
-                groupInput.className = 'group email-group';
+                self.nodes.email = document.createElement('div');
+                self.nodes.email.className = 'group email-group';
 
                 var nameLabel = document.createElement('label');
-                nameLabel.textContent = 'Enter Email';
+                nameLabel.dataset.languageKey = 'email';
+                nameLabel.textContent = self.dictionary.t(['modal', self.modalType, 'email']);
                 nameLabel.className = 'email-label';
 
                 var nameInput = document.createElement('input');
                 nameInput.setAttribute('type', 'text');
                 nameInput.setAttribute('name', 'email');
-                nameInput.dataset.validType = 'email';
                 nameInput.className = 'email-input';
                 self.inputs.email = nameInput;
 
-                groupInput.appendChild(nameLabel);
-                groupInput.appendChild(nameInput);
-                return groupInput;
+                self.nodes.email.appendChild(nameLabel);
+                self.nodes.email.appendChild(nameInput);
+                return self.nodes.email;
             },
             birth: function(){
-                var groupInput = document.createElement('div');
-                groupInput.className = 'group date-group';
+                self.nodes.birth = document.createElement('div');
+                self.nodes.birth.className = 'group date-group';
 
                 var nameLabel = document.createElement('label');
-                nameLabel.textContent = 'Date of birth';
+                nameLabel.dataset.languageKey = 'birth';
+                nameLabel.textContent = self.dictionary.t(['modal', self.modalType, 'birth']);
                 nameLabel.className = 'date-label';
 
                 var dateInput = document.createElement('input');
                 dateInput.setAttribute('type', 'date');
                 dateInput.setAttribute('name', 'birth');
-                dateInput.dataset.validType = 'birth';
                 dateInput.className = 'birth-input';
                 self.inputs.birth = dateInput;
 
-                groupInput.appendChild(nameLabel);
-                groupInput.appendChild(dateInput);
-                return groupInput;
+                self.nodes.birth.appendChild(nameLabel);
+                self.nodes.birth.appendChild(dateInput);
+                return self.nodes.birth;
             },
             date: function(){
-                var groupInput = document.createElement('div');
-                groupInput.className = 'group date-group';
+                self.nodes.time = document.createElement('div');
+                self.nodes.time.className = 'group date-group';
 
                 var nameLabel = document.createElement('label');
-                nameLabel.textContent = 'Enter estimated time';
+                nameLabel.dataset.languageKey = 'time';
+                nameLabel.textContent = self.dictionary.t(['modal', self.modalType, 'time']);
                 nameLabel.className = 'date-label';
 
                 var dateInput = document.createElement('input');
                 dateInput.setAttribute('type', 'date');
                 dateInput.setAttribute('name', 'date');
-                dateInput.dataset.validType = 'date';
                 dateInput.className = 'date-input';
                 self.inputs.date = dateInput;
 
                 var timeInput = document.createElement('input');
                 timeInput.setAttribute('type', 'time');
                 timeInput.setAttribute('name', 'time');
-                timeInput.dataset.validType = 'time';
                 timeInput.className = 'time-input';
                 self.inputs.time = timeInput;
 
-                groupInput.appendChild(nameLabel);
-                groupInput.appendChild(dateInput);
-                groupInput.appendChild(timeInput);
-                return groupInput;
+                self.nodes.time.appendChild(nameLabel);
+                self.nodes.time.appendChild(dateInput);
+                self.nodes.time.appendChild(timeInput);
+                return self.nodes.time;
             },
             control: function(){
-                var groupInput = document.createElement('div');
-                groupInput.className = 'group control-group';
+                self.nodes.control = document.createElement('div');
+                self.nodes.control.className = 'group control-group';
 
                 var addBtn = document.createElement('button');
                 addBtn.className = 'add-btn';
-                addBtn.textContent = 'Save';
+                addBtn.dataset.languageKey = 'save';
+                addBtn.textContent = self.dictionary.t(['modal', self.modalType, 'save']);
 
                 var cancelBtn = document.createElement('button');
                 cancelBtn.className = 'cancel-btn';
-                cancelBtn.textContent = 'Cancel';
+                cancelBtn.dataset.languageKey = 'cancel';
+                cancelBtn.textContent = self.dictionary.t(['modal', self.modalType, 'cancel']);
 
-                groupInput.appendChild(addBtn);
-                groupInput.appendChild(cancelBtn);
-                return groupInput;
+                self.nodes.control.appendChild(addBtn);
+                self.nodes.control.appendChild(cancelBtn);
+                return self.nodes.control;
             }
         };
         this.inputs = {};
@@ -256,7 +261,8 @@
             email: this.inputs.email.value,
             date: new Date(strTime),
             birth: new Date(this.inputs.birth.value),
-            avatar: this.avatar
+            avatar: this.avatar,
+            timePassed: false
         };
 
         return data;

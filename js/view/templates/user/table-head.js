@@ -5,64 +5,76 @@
 (function(App, document) {
 
     function Head(options) {
+        var self = this;
+
         this.el = document.createElement('thead');
         this.el.className = 'tHead';
+        this.el.dataset.languageKey = 'tHead';
         this.container = App.serviceContainer;
         this.collection = options.collection;
         this.tableEl = options.tableEl;
+        this.dictionary = this.container.lib.dictionary;
+        this.nodes = {};
         this.renderOrder = ['id', 'name', 'email', 'birth', 'date', 'del', 'edit'];
         this.fields = {
             id: function() {
-              var idElement = document.createElement('th');
-              idElement.className = 'id';
-              idElement.dataset.sortBy = 'id';
-              idElement.dataset.orderBy = 'asc';
-              idElement.textContent = 'ID';
-              return idElement;
+                self.nodes.id = document.createElement('th');
+                self.nodes.id.className = 'id';
+                self.nodes.id.dataset.sortBy = 'id';
+                self.nodes.id.dataset.orderBy = 'asc';
+                self.nodes.id.dataset.languageKey = 'id';
+                self.nodes.id.textContent = self.dictionary.t(['userTable', 'tHead', 'id']);
+                return self.nodes.id;
             },
             name: function() {
-                var nameElement = document.createElement('th');
-                nameElement.className = 'name';
-                nameElement.dataset.sortBy = 'name';
-                nameElement.dataset.orderBy = 'asc';
-                nameElement.textContent = 'Name';
-                return nameElement;
+                self.nodes.name = document.createElement('th');
+                self.nodes.name.className = 'name';
+                self.nodes.name.dataset.sortBy = 'name';
+                self.nodes.name.dataset.orderBy = 'asc';
+                self.nodes.name.dataset.languageKey = 'name';
+                self.nodes.name.textContent = self.dictionary.t(['userTable', 'tHead', 'name']);
+                return self.nodes.name;
             },
             email: function() {
-                var emailElement = document.createElement('th');
-                emailElement.className = 'email';
-                emailElement.dataset.sortBy = 'email';
-                emailElement.dataset.orderBy = 'asc';
-                emailElement.textContent = 'Email';
-                return emailElement;
+                self.nodes.email = document.createElement('th');
+                self.nodes.email.className = 'email';
+                self.nodes.email.dataset.sortBy = 'email';
+                self.nodes.email.dataset.orderBy = 'asc';
+                self.nodes.email.dataset.languageKey = 'email';
+                self.nodes.email.textContent = self.dictionary.t(['userTable', 'tHead', 'email']);
+                return self.nodes.email;
             },
             birth: function() {
-                var dateElement = document.createElement('th');
-                dateElement.className = 'birth';
-                dateElement.dataset.sortBy = 'birth';
-                dateElement.dataset.orderBy = 'asc';
-                dateElement.textContent = 'Date of birth';
-                return dateElement;
+                self.nodes.birth = document.createElement('th');
+                self.nodes.birth.className = 'birth';
+                self.nodes.birth.dataset.sortBy = 'birth';
+                self.nodes.birth.dataset.orderBy = 'asc';
+                self.nodes.birth.dataset.languageKey = 'birth';
+                self.nodes.birth.textContent = self.dictionary.t(['userTable', 'tHead', 'birth']);
+                return self.nodes.birth;
             },
             date: function() {
-                var dateElement = document.createElement('th');
-                dateElement.className = 'date';
-                dateElement.dataset.sortBy = 'date';
-                dateElement.dataset.orderBy = 'asc';
-                dateElement.textContent = 'Estimated time';
-                return dateElement;
+                self.nodes.time = document.createElement('th');
+                self.nodes.time.className = 'date';
+                self.nodes.time.dataset.sortBy = 'date';
+                self.nodes.time.dataset.orderBy = 'asc';
+                self.nodes.time.dataset.languageKey = 'time';
+                self.nodes.time.textContent = self.dictionary.t(['userTable', 'tHead', 'time']);
+                return self.nodes.time;
             },
             del: function(){
-                var delElement = document.createElement('th');
-                delElement.className = 'delete';
-                delElement.textContent = 'Delete';
-                return delElement;
+                self.nodes.delete = document.createElement('th');
+                self.nodes.delete.className = 'delete';
+                self.nodes.delete.dataset.languageKey = 'delete';
+                self.nodes.delete.textContent = self.dictionary.t(['userTable', 'tHead', 'delete']);
+                return self.nodes.delete;
             },
             edit: function() {
-                var editElement = document.createElement('th');
-                editElement.className = 'edit';
-                editElement.textContent = 'Edit';
-                return editElement;
+                self.nodes.edit = document.createElement('th');
+                self.nodes.edit.className = 'edit';
+                self.nodes.edit.dataset.languageKey = 'edit';
+                self.nodes.edit.textContent = self.dictionary.t(['userTable', 'tHead', 'edit']);
+                return self.nodes.edit;
             }
         };
 

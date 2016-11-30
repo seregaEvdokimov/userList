@@ -26,10 +26,13 @@
         App.serviceContainer.template.notify = this;
     }
 
-    Notify.prototype.create = function(msg) {
+    Notify.prototype.create = function(params, type) {
+        if(!App.showNotify) return false;
+
         var notify = new App.View.Notify.Item({
             notifyEl: this,
-            msg: msg
+            params: params,
+            type: type
         });
 
         this.items.push(notify);
@@ -50,14 +53,14 @@
 
     Notify.prototype.notifyAnimate = function(self, event) {
         var el = event.target;
-        var opacity =  el.style.opacity;
 
-        if(opacity == 0) {
-            self.items = self.items.reduce(function(acc, item) {
-                item.id == el.dataset.notifyId ? item.remove() : acc.push(item);
-                return acc;
-            }, []);
-        }
+        self.items = self.items.reduce(function(acc, item) {
+            item.id == parseInt(el.dataset.notifyId) ? item.remove() : acc.push(item);
+            return acc;
+        }, []);
+
+        console.log(self.items.length);
+        if(!self.items.length) self.el.innerHTML = '';
     };
 
     Notify.prototype.render = function() {

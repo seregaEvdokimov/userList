@@ -7,28 +7,35 @@
     function Search(option) {
         this.el = document.createElement('div');
         this.el.className = 'search';
+        this.el.dataset.languageKey = 'search';
         this.container = App.serviceContainer;
         this.collection = option.collection;
+        this.headerEl = option.headerEl;
+        this.dictionary = this.container.lib.dictionary;
+        this.nodes = {};
 
         // put to container
         App.serviceContainer.template.search = this;
     }
 
     Search.prototype.handlerSearch = function(self, event) {
-        var searchStr = self.el.querySelector('input').value;
+        var searchStr = self.nodes.input.value;
         self.container.template.userTableTbody.render({type: 'search', find: searchStr});
     };
 
     Search.prototype.render = function() {
-        var input = document.createElement('input');
-        input.setAttribute('name', 'search');
+        this.nodes.input = document.createElement('input');
+        this.nodes.input.setAttribute('name', 'search');
 
-        var button = document.createElement('button');
-        button.textContent = 'Search';
-        button.addEventListener('click', this.handlerSearch.bind(this, this));
+        this.nodes.button = document.createElement('button');
+        this.nodes.button.dataset.languageKey = 'button';
+        this.nodes.button.textContent = this.dictionary.t(['header', 'search', 'button']);
+        this.nodes.button.addEventListener('click', this.handlerSearch.bind(this, this));
 
-        this.el.appendChild(input);
-        this.el.appendChild(button);
+        for (var index in this.nodes) {
+            this.el.appendChild(this.nodes[index]);
+        }
+
         return this.el;
     };
 

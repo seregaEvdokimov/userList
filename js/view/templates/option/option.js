@@ -7,6 +7,7 @@
     function Option(option) {
         this.el = document.createElement('div');
         this.el.className = 'option';
+        this.el.dataset.languageKey = 'option';
 
         this.container = App.serviceContainer;
         this.rootView = option.rootView;

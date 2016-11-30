@@ -1,6 +1,7 @@
 /**
  * Created by s.evdokimov on 08.11.2016.
  */
+
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
@@ -8,12 +9,139 @@ var bodyParser = require('body-parser');
 var fs = require("fs");
 var faker = require("faker");
 
+var siteUrl = "http://localhost:63342";
+var backAPI = {
+    pathToUsersList: "data/users.json",
+    userData: [],
+
+    init: function() {
+        var self = this;
+        fs.readFile(this.pathToUsersList, 'utf8', function (err, data) {
+            if (err) return console.log(err);
+            self.userData = JSON.parse(data);
+        });
+
+        return this;
+    },
+    rewriteData: function(type, data) {
+        var pathToFile = '';
+        switch(type) {
+            case 'user':
+                pathToFile = this.pathToUsersList;
+                break;
+        }
+
+        data = JSON.stringify(data);
+        fs.writeFile(pathToFile, data, 'utf8', function (err) {
+            if (err) return console.log(err);
+        });
+    },
+    user: function(type, data) {
+        var result = [];
+        switch(type) {
+            case 'get':
+                result = this.getUsers(data);
+                break;
+            case 'create':
+                result = this.createUser(data);
+                break;
+            case 'update':
+                result = this.updateUser(data);
+                break;
+            case 'delete':
+                result = this.deleteUser(data);
+                break;
+        }
+
+        return result;
+    },
+    tooltip: function(type, data) {
+        var result = [];
+        switch(type) {
+            case 'get':
+                result = this.getTooltip(data);
+                break;
+        }
+
+        return result;
+    },
+    getUsers: function(data) {
+        var self = this;
+        if(data.count) return JSON.stringify({count: self.userData.length});
+
+        var start = (data.start == 1) ? 0 : data.start;
+        var limit = data.limit;
+
+        var result = this.userData.filter(function (item, index) {
+            return index >= start && index < limit;
+        });
+
+        return JSON.stringify(result);
+    },
+    createUser: function(data) {
+        var uniqId = parseInt(this.userData[this.userData.length - 1].id) + 1;
+        data.id = uniqId;
+        data.timePassed = ('boolean' == typeof data.timePassed) ? data.timePassed : !data.timePassed;
+
+        this.userData.push(data);
+        this.rewriteData('user', this.userData);
+        return JSON.stringify(data);
+    },
+    updateUser: function(data) {
+        data.id = parseInt(data.id);
+        data.timePassed = ('boolean' == typeof data.timePassed) ? data.timePassed : !data.timePassed;
+
+        var findIndex;
+        this.userData.forEach(function (item, index) {
+            if (item.id === data.id) {
+                findIndex = index;
+            }
+        });
+
+        this.userData.splice(findIndex, 1, data);
+        this.rewriteData('user', this.userData);
+        return JSON.stringify(data);
+    },
+    deleteUser: function(data) {
+        var removeIndex;
+        this.userData.forEach(function(item, index) {
+            if (item.id == data.id) {
+                removeIndex = index;
+            }
+        });
+
+        var deletedUser = this.userData.splice(removeIndex, 1)[0];
+        this.rewriteData('user', this.userData);
+        return JSON.stringify(deletedUser);
+    },
+    getTooltip: function (data) {
+        var id = parseInt(data.id);
+        var type = data.type;
+
+        var find = this.userData.filter(function (item, index) {
+            return item.id === id;
+        });
+
+        find = find[0];
+
+        var result = {};
+        switch(type) {
+            case 'name':
+                result.img = find.avatar;
+                result.text = find.name;
+                break;
+            case 'email':
+                result.text = Math.floor(Math.random() * 100);
+                break;
+        }
+
+        return JSON.stringify(result);
+    }
+}.init();
+
 server.listen(4000);
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-
-var siteUrl = "http://localhost:63342";
-var pathToUsersList = "data/users.json";
 
 app.options('/*', function (req, res) {
     addResponseHeaders(res);
@@ -22,152 +150,33 @@ app.options('/*', function (req, res) {
 });
 
 app.post('/user', function (req, res) {
-    fs.readFile(pathToUsersList, 'utf8', function (err, data) {
-        if (err) {
-            return console.log(err);
-        } else {
-            console.log(data);
-            var users = JSON.parse(data);
-            var model = req.body;
-
-            var uniqId = parseInt(users[users.length - 1].id) + 1;
-
-            model["id"] = uniqId;
-
-            users.push(model);
-            model = JSON.stringify(model);
-            users = JSON.stringify(users);
-
-            fs.writeFile(pathToUsersList, users, 'utf8', function (err) {
-                if (err) return console.log(err);
-            });
-            addResponseHeaders(res);
-            res.status(201);
-            res.end(model);
-        }
-    });
+    var result = backAPI.user('create', req.body);
+    addResponseHeaders(res);
+    res.end(result);
 });
 
 app.delete('/user', function (req, res) {
-    fs.readFile(pathToUsersList, 'utf8', function (err, data) {
-        if (err) {
-            return console.log(err);
-        } else {
-            console.log(data);
-            var id = parseInt(req.body.id);
-            var users = JSON.parse(data);
-            var removeIndex;
-            users.forEach(function (item, index) {
-                if (item['id'] === id) {
-                    removeIndex = index;
-                }
-            });
-            var deletedModel = users.splice(removeIndex, 1)[0];
-            users = JSON.stringify(users);
-            fs.writeFile(pathToUsersList, users, 'utf8', function (err) {
-                if (err) return console.log(err);
-            });
-            addResponseHeaders(res);
-            res.end(JSON.stringify(deletedModel));
-        }
-    });
+    var result = backAPI.user('delete', req.body);
+    addResponseHeaders(res);
+    res.end(result);
 });
 
 app.put('/user', function (req, res) {
-    fs.readFile(pathToUsersList, 'utf8', function (err, data) {
-        if (err) {
-            return console.log(err);
-        } else {
-            console.log(data);
-            var users = JSON.parse(data);
-            var model = req.body;
-            var id = +parseInt(model['id']);
-            model.id = id;
-
-            var findIndex;
-            users.forEach(function (item, index) {
-                if (item['id'] === id) {
-                    findIndex = index;
-                }
-            });
-
-            users.splice(findIndex, 1, model);
-            users = JSON.stringify(users);
-
-            fs.writeFile(pathToUsersList, users, 'utf8', function (err) {
-                if (err) return console.log(err);
-            });
-
-            model = JSON.stringify(model);
-            addResponseHeaders(res);
-            res.status(200);
-            res.end(model);
-        }
-    });
+    var result = backAPI.user('update', req.body);
+    addResponseHeaders(res);
+    res.end(result);
 });
 
 app.get('/user', function (req, res) {
-    fs.readFile(pathToUsersList, 'utf8', function (err, data) {
-        if (err) {
-            return console.log(err);
-        } else {
-            console.log(data);
-            var users = JSON.parse(data);
-
-            if(req.query.count) {
-                var out = {count: users.length};
-                addResponseHeaders(res);
-                return res.end(JSON.stringify(out));
-            }
-
-            var model = req.query;
-            var start = (model.start == 1) ? 0 : model.start;
-            var limit = model.limit;
-
-            var result = users.filter(function (item, index) {
-                return index >= start && index < limit;
-            });
-
-            addResponseHeaders(res);
-            res.end(JSON.stringify(result));
-        }
-    });
+    var result = backAPI.user('get', req.query);
+    addResponseHeaders(res);
+    res.end(result);
 });
 
 app.get('/tooltip', function (req, res) {
-    fs.readFile(pathToUsersList, 'utf8', function (err, data) {
-        if (err) {
-            return console.log(err);
-        } else {
-            var users = JSON.parse(data);
-            var model = req.query;
-
-            var id = parseInt(model.id);
-            var type = model.type;
-
-            var find = users.filter(function (item, index) {
-                return item['id'] === id;
-            });
-
-            find = find[0];
-
-            var result = {};
-            switch(type) {
-                case 'name':
-                    result.img = find.avatar;
-                    result.text = find.name;
-                break;
-                case 'email':
-                    result.text = Math.floor(Math.random() * 100);
-                break;
-            }
-
-            var out = JSON.stringify(result);
-            addResponseHeaders(res);
-            res.status(200);
-            res.end(out);
-        }
-    });
+    var result = backAPI.tooltip('get', req.query);
+    addResponseHeaders(res);
+    res.end(result);
 });
 
 function addResponseHeaders(obj) {
@@ -176,21 +185,56 @@ function addResponseHeaders(obj) {
     obj.header('Access-Control-Allow-Headers', 'Content-Type');
 }
 
-// fields: name(first, last), email, created_at, deleted_at
-io.on('connection', function(socket) {
-    console.log('connect');
 
-    setInterval(function() {
-
+var socketIntervals = {};
+function checkForUpdates(socket) {
+    socketIntervals.createUserInterval = setInterval(function() {
         var user = {
             id: null,
             name: faker.name.findName(),
             email: faker.internet.email(),
             date: faker.date.future(),
             birth: faker.date.recent(),
-            avatar: faker.image.avatar()
+            avatar: faker.image.avatar(),
+            timePassed: false
         };
 
+        backAPI.user('create', user);
         socket.emit('new user', user);
-    }, 60000);
+    }, 1160000);
+
+    socketIntervals.timePassedInterval = setInterval(function() {
+        var result = backAPI.userData.reduce(function(acc, item) {
+            if(item.timePassed) return acc;
+
+            var startTime = Date.now();
+            var finishTime = new Date(item.date).getTime();
+
+            if(startTime > finishTime) {
+                item.timePassed = true;
+                backAPI.user('update', item);
+                acc.push(item);
+            }
+
+            return acc;
+        }, []);
+
+        if(result.length) socket.emit('time passed', result);
+    }, 1000);
+}
+function clearUpdateIntervals() {
+    for(var index in socketIntervals) {
+        var interval = socketIntervals[index];
+        clearInterval(interval);
+    }
+}
+
+io.on('connection', function(socket) {
+    console.log('connect');
+    checkForUpdates(socket);
+
+    socket.on('disconnect', function () {
+        console.log('disconnect');
+        clearUpdateIntervals();
+    });
 });

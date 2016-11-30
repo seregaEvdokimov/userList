@@ -6,13 +6,14 @@
 
     function AddUser(option) {
         this.el = document.createElement('button');
-        this.el.textContent = 'Add User';
         this.el.className = 'add-user';
+        this.el.dataset.languageKey = 'adduser';
 
         this.container = App.serviceContainer;
+        this.dictionary = this.container.lib.dictionary;
         this.blockEl = option.blockEl;
         this.collection = option.userCollection;
-
+        this.el.textContent = this.dictionary.t(['option', 'adduser']);
         // components
 
         // listeners

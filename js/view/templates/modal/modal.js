@@ -7,6 +7,7 @@
     function Modal(option) {
         this.el = document.createElement('div');
         this.el.className = 'modal';
+        this.el.dataset.languageKey = 'modal';
         this.el.style.visibility = 'hidden';
 
         this.container = App.serviceContainer;
@@ -25,9 +26,7 @@
             modalEl: this
         });
 
-        this.modalConfirm = new App.View.Modal.Confirm({
-            text: 'Есть изменения. Сохранить?'
-        });
+        this.modalConfirm = new App.View.Modal.Confirm();
 
         // listeners
         this.el.addEventListener('click', this.hideAllModal.bind(this, this));
@@ -54,7 +53,6 @@
         this.el.appendChild(this.modalConfirm.render());
         return this.el;
     };
-
 
     App.View.Modal = Modal
 })(App, document);

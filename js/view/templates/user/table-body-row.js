@@ -10,50 +10,43 @@
 
         this.el = document.createElement('tr');
         this.id = options.collection.id;
-        this.container = options.collection;
+        this.container = App.serviceContainer;
         this.collection = options.collection;
         this.tbodyEl = options.tbodyEl;
+        this.dictionary = this.container.lib.dictionary;
         this.nodes = {};
         this.renderOrder = ['id', 'name' , 'email' , 'birth', 'date', 'del', 'edit'];
         this.fields = {
             id: function(user) {
-                var idElement = document.createElement('td');
-                idElement.className = 'id';
-                idElement.textContent = user.id;
-
-                self.nodes.id = idElement;
-                return idElement;
+                self.nodes.id = document.createElement('td');
+                self.nodes.id.className = 'id';
+                self.nodes.id.textContent = user.id;
+                return self.nodes.id;
             },
             name: function(user) {
-                var nameElement = document.createElement('td');
-                nameElement.className = 'name';
-                nameElement.textContent = user.name;
-                nameElement.dataset.tooltip = 'name';
-
-                self.nodes.name = nameElement;
-                return nameElement;
+                self.nodes.name = document.createElement('td');
+                self.nodes.name.className = 'name';
+                self.nodes.name.textContent = user.name;
+                self.nodes.name.dataset.tooltip = 'name';
+                return self.nodes.name;
             },
             email: function(user) {
-                var emailElement = document.createElement('td');
-                emailElement.className = 'email';
-                emailElement.textContent = user.email;
-                emailElement.dataset.tooltip = 'email';
-
-                self.nodes.email = emailElement;
-                return emailElement;
+                self.nodes.email = document.createElement('td');
+                self.nodes.email.className = 'email';
+                self.nodes.email.textContent = user.email;
+                self.nodes.email.dataset.tooltip = 'email';
+                return self.nodes.email;
             },
             birth: function(user) {
                 var date = new Date(user.birth);
-                var dateElement = document.createElement('td');
-                dateElement.className = 'birth';
-                dateElement.textContent = date.getDate() + '. ' + (date.getMonth() + 1) + '. ' + date.getFullYear();
-
-                self.nodes.birt = dateElement;
-                return dateElement;
+                self.nodes.birt = document.createElement('td');
+                self.nodes.birt.className = 'birth';
+                self.nodes.birt.textContent = date.getDate() + '. ' + (date.getMonth() + 1) + '. ' + date.getFullYear();
+                return self.nodes.birt;
             },
             date: function(user){
-                var dateElement = document.createElement('td');
-                dateElement.className = 'date';
+                self.nodes.date = document.createElement('td');
+                self.nodes.date.className = 'date';
 
                 var leftTimeElement = document.createElement('div');
                 leftTimeElement.className = 'left-time';
@@ -63,39 +56,38 @@
                 overlayElement.className = 'overlay';
                 self.progress = new App.Lib.ProgressBarTimer({start: user.birth, end: user.date}, overlayElement);
 
-                dateElement.appendChild(leftTimeElement);
-                dateElement.appendChild(overlayElement);
-
-                self.nodes.date = dateElement;
-                return dateElement;
+                self.nodes.date.appendChild(leftTimeElement);
+                self.nodes.date.appendChild(overlayElement);
+                return self.nodes.date;
             },
             del: function() {
-                var delElement = document.createElement('td');
-                delElement.className = 'del';
+                self.nodes.del = document.createElement('td');
+                self.nodes.del.className = 'del';
 
                 var delButton = document.createElement('a');
-                delButton.textContent = 'Delete';
+                delButton.dataset.languageKey = 'delete';
+                delButton.textContent = self.dictionary.t(['userTable', 'tBody', 'delete']);
                 delButton.className = 'delete-btn';
 
-                delElement.appendChild(delButton);
-                return delElement;
+                self.nodes.del.appendChild(delButton);
+                return self.nodes.del;
             },
             edit: function() {
-                var editElement = document.createElement('td');
-                editElement.className = 'edit';
+                self.nodes.edit = document.createElement('td');
+                self.nodes.edit.className = 'edit';
 
                 var editButton = document.createElement('a');
-                editButton.textContent = 'Edit';
+                editButton.dataset.languageKey = 'edit';
+                editButton.textContent = self.dictionary.t(['userTable', 'tBody', 'edit']);
                 editButton.className = 'edit-btn';
 
-                editElement.appendChild(editButton);
-                return editElement;
+                self.nodes.edit.appendChild(editButton);
+                return self.nodes.edit;
             }
         };
 
         // components
         this.timer = new App.Lib.Timer({start: self.collection.birth, end: self.collection.date}, this.timerCb.bind(this));
-
         this.render();
     }
 
@@ -104,6 +96,8 @@
         var avatar = {};
 
         for(var index in data) {
+            if(index == 'timePassed') continue;
+
             var val = data[index];
             if(index == 'birth' || index == 'date') {
                 timerData[index] = val;

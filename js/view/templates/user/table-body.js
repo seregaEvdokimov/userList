@@ -9,7 +9,9 @@
 
         this.el = document.createElement('tbody');
         this.el.className = 'tBody';
+        this.el.dataset.languageKey = 'tBody';
         this.container = App.serviceContainer;
+        this.dictionary = this.container.lib.dictionary;
         this.collection = options.collection;
         this.tableEl = options.tableEl;
         this.tRows = [];
@@ -104,8 +106,9 @@
             return acc;
         }, []);
 
-        user.delete(id).then(function() {
+        user.delete(id).then(function(res) {
             self.event.dispatch('deleteRow');
+            self.container.template.notify.create(res, 'deleteUser');
         });
     };
 

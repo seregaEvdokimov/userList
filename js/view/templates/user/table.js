@@ -7,6 +7,7 @@
     function Table(options) {
         this.el = document.createElement('table');
         this.el.className = 'table';
+        this.el.dataset.languageKey = 'userTable';
         this.rootView = options.rootView;
         this.container = App.serviceContainer;
         this.tooltip;

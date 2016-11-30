@@ -19,6 +19,7 @@
 <script src="js/lib/Validator.js"></script>
 <script src="js/lib/imageUploader.js"></script>
 <script src="js/lib/Event.js"></script>
+<script src="js/lib/Dictionary.js"></script>
 
     <!--Requests-->
 <script src="js/request/request.js"></script>
@@ -33,6 +34,8 @@
 <script src="js/view/view.js"></script>
 <script src="js/view/templates/header/header.js"></script>
 <script src="js/view/templates/header/search.js"></script>
+<script src="js/view/templates/header/settings.js"></script>
+<script src="js/view/templates/header/languages.js"></script>
 <script src="js/view/templates/user/table.js"></script>
 <script src="js/view/templates/user/table-head.js"></script>
 <script src="js/view/templates/user/table-body.js"></script>
@@ -52,13 +55,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.6.0/socket.io.js"></script>
     <script>
         var socket = io('http://localhost:4000/');
-        socket.on('new user', function (data) {
-            console.log('socket', data);
+        App.socket = socket;
 
-            var str = 'Добавлен пользователь: ' + data.name;
-            App.serviceContainer.template.notify.create(str);
-            App.serviceContainer.template.modalCreate.send(data);
-//            socket.emit('my other event', { my: 'data' });
+        socket.on('new user', function (user) {
+            App.serviceContainer.template.notify.create(user);
+            App.serviceContainer.template.userTableTbody.createRow(user, 'createUser');
+        });
+
+        socket.on('time passed', function(result){
+            result.forEach(function(item) {
+                App.serviceContainer.template.notify.create(item, 'timePassed');
+            });
         });
     </script>
 </body>

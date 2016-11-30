@@ -7,7 +7,10 @@
     function Confirm(option) {
         this.el = document.createElement('div');
         this.el.className = 'modal-window modal-confirm';
-        this.text = option.text;
+        this.el.dataset.languageKey = 'confirm';
+        this.container = App.serviceContainer;
+        this.dictionary = this.container.lib.dictionary;
+        this.nodes = {};
 
         // components
         this.event = App.Lib.Event;
@@ -53,27 +56,30 @@
     };
 
     Confirm.prototype.controlsButton = function() {
-        var wrapperButtons = document.createElement('div');
-        wrapperButtons.className = 'control-group';
+        this.nodes.wrapperButtons = document.createElement('div');
+        this.nodes.wrapperButtons.className = 'control-group';
 
         var yesBtn = document.createElement('button');
-        yesBtn.textContent = 'ОК';
+        yesBtn.dataset.languageKey = 'save';
+        yesBtn.textContent = this.dictionary.t(['modal', 'confirm', 'save']);
         yesBtn.className = 'ok';
 
         var noBtn = document.createElement('Button');
-        noBtn.textContent = 'Отмена';
+        noBtn.dataset.languageKey = 'cancel';
+        noBtn.textContent = this.dictionary.t(['modal', 'confirm', 'cancel']);
         noBtn.className = 'cancel';
 
-        wrapperButtons.appendChild(yesBtn);
-        wrapperButtons.appendChild(noBtn);
+        this.nodes.wrapperButtons.appendChild(yesBtn);
+        this.nodes.wrapperButtons.appendChild(noBtn);
 
-        return wrapperButtons;
+        return this.nodes.wrapperButtons;
     };
 
     Confirm.prototype.render = function() {
         var controlEl = this.controlsButton();
         var titleEl = document.createElement('h3');
-        titleEl.textContent = this.text;
+        titleEl.dataset.languageKey = 'message';
+        titleEl.textContent = this.dictionary.t(['modal', 'confirm', 'message']);
         titleEl.className = 'caption';
 
         this.el.appendChild(titleEl);

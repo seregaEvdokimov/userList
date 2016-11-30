@@ -9,7 +9,9 @@
         App.View.Modal.CreateUser.call(this, option);
 
         this.el.className = 'modal-window modal-edit';
+        this.el.dataset.languageKey = 'edit';
         this.findItem = [];
+        this.modalType = 'edit';
         this.renderOrder.push('id');
         this.fields.id = function() {
             var nameInput = document.createElement('input');

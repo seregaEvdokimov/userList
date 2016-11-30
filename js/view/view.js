@@ -6,6 +6,8 @@
 
     function View(collection) {
         this.container = App.serviceContainer;
+        this.event = App.Lib.Event;
+        this.dictionary = this.container.lib.dictionary;
 
         // components
         this.header = new App.View.Header({
@@ -36,6 +38,7 @@
 
         // listeners
         document.addEventListener('keydown', this.handlerKeyPress.bind(this, this));
+        this.event.addListener('languageChange', this.localization.bind(this));
 
         // put to container
         App.serviceContainer.template.rootView = this;
@@ -55,6 +58,65 @@
         App.container.appendChild(this.modalWindow.render());
         App.container.appendChild(this.optionBlock.render());
         App.container.appendChild(this.notifyBlock.render());
+    };
+
+    View.prototype.localization = function() {
+        var self = this;
+        var ast = this.createAST(App.container);
+
+        ast.children.forEach(function(item) {
+            self.translate(item, '');
+        });
+
+        return true;
+    };
+
+    View.prototype.translate = function(node, acc) {
+        var self = this;
+        acc += node.key + '|';
+
+        if(node.children.length) {
+            node.children.forEach(function(item) {
+                return self.translate(item, acc);
+            });
+        } else {
+            var keys = acc.substring(0, acc.length - 1).split('|');
+
+            var params = keys.reduce(function(acc, item) {
+                if(item != '') acc.push(item);
+                return acc;
+            }, []);
+
+            var str = self.dictionary.t(params);
+            if('string' == typeof str) node.el.textContent = str;
+        }
+
+        return true;
+    };
+
+    View.prototype.createAST = function(element) {
+        var self = this;
+        var item = {};
+        item.key = '';
+        item.el = null;
+        item.children = [];
+
+        if(element.dataset.languageKey) item.key = element.dataset.languageKey;
+        item.el = element;
+
+        var elements = [];
+        if(element.childNodes) elements = [].slice.apply(element.childNodes);
+
+        elements = elements.reduce(function(acc, el) {
+            if(el.nodeType == 1) acc.push(el);
+            return acc;
+        }, []);
+
+        item.children = elements.map(function(el) {
+            if(el.childNodes) return self.createAST(el);
+        });
+
+        return item;
     };
 
     App.View = View;
