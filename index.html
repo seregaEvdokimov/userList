@@ -58,8 +58,8 @@
         App.socket = socket;
 
         socket.on('new user', function (user) {
-            App.serviceContainer.template.notify.create(user);
-            App.serviceContainer.template.userTableTbody.createRow(user, 'createUser');
+            App.serviceContainer.template.notify.create(user, 'createUser');
+            App.serviceContainer.template.userTableTbody.createRow(user);
         });
 
         socket.on('time passed', function(result){
