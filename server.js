@@ -201,7 +201,7 @@ function checkForUpdates(socket) {
 
         backAPI.user('create', user);
         socket.emit('new user', user);
-    }, 1160000);
+    }, 60000);
 
     socketIntervals.timePassedInterval = setInterval(function() {
         var result = backAPI.userData.reduce(function(acc, item) {

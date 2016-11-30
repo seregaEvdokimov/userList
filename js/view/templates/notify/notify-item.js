@@ -45,7 +45,6 @@
         this.el.className = 'notify';
         this.el.dataset.notifyId = this.id;
 
-        console.log(this.params, this.keys);
         var str = this.dictionary.getMessage(this.params, this.keys);
         this.el.textContent = str;
 

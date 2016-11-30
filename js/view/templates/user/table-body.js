@@ -119,6 +119,7 @@
     };
 
     Body.prototype.createRow = function(res) {
+        this.collection.user.push(res);
         var row = new App.View.UserTable.Body.Row({
             collection: res,
             tbodyEl: this
