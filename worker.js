@@ -6,12 +6,12 @@
 (function() {
     'use strict';
 
-    this.importScripts('https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.6.0/socket.io.js');
+    self.importScripts('https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.6.0/socket.io.js');
     var socket = io('http://localhost:4000/');
     var connections = 0; // count active connections
     var ports = [];
 
-    this.addEventListener("connect", function (e) {
+    self.addEventListener("connect", function (e) {
         var port = e.ports[0];
         ports.push(port);
         port.start();

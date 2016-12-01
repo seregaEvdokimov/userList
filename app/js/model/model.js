@@ -1,1 +1,0 @@
-!function(t){"use strict";function e(){this.entity="",this.records=[]}e.prototype.xhrLoad=function(e){return t.Request.load(e)},e.prototype.xhrUpdate=function(e){return t.Request.update(e)},e.prototype.xhrDelete=function(e){return t.Request.delete(e)},e.prototype.xhrCreate=function(e){return t.Request.create(e)},t.Model=e}(App);

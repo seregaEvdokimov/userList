@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 
@@ -11,51 +11,11 @@
 
     <!--app-->
 <script src="js/app.js"></script>
+<script src="../worker.js"></script>
 
-    <!--lib-->
-<script src="js/lib/Timer.js"></script>
-<script src="js/lib/ProgressBarTimer.js"></script>
-<script src="js/lib/Tooltip.js"></script>
-<script src="js/lib/Validator.js"></script>
-<script src="js/lib/imageUploader.js"></script>
-<script src="js/lib/Event.js"></script>
-<script src="js/lib/Dictionary.js"></script>
-
-    <!--Requests-->
-<script src="js/request/request.js"></script>
-<script src="js/request/xhr.js"></script>
-
-    <!--Model-->
-<script src="js/model/model.js"></script>
-<script src="js/model/user.js"></script>
-<script src="js/model/tooltip.js"></script>
-
-    <!--Views-->
-<script src="js/view/view.js"></script>
-<script src="js/view/templates/header/header.js"></script>
-<script src="js/view/templates/header/search.js"></script>
-<script src="js/view/templates/header/settings.js"></script>
-<script src="js/view/templates/header/languages.js"></script>
-<script src="js/view/templates/user/table.js"></script>
-<script src="js/view/templates/user/table-head.js"></script>
-<script src="js/view/templates/user/table-body.js"></script>
-<script src="js/view/templates/user/table-body-row.js"></script>
-<script src="js/view/templates/modal/modal.js"></script>
-<script src="js/view/templates/modal/modal-confirm.js"></script>
-<script src="js/view/templates/modal/user-create.js"></script>
-<script src="js/view/templates/modal/user-edit.js"></script>
-<script src="js/view/templates/option/option.js"></script>
-<script src="js/view/templates/option/add-user.js"></script>
-<script src="js/view/templates/option/pagination.js"></script>
-<script src="js/view/templates/notify/notify.js"></script>
-<script src="js/view/templates/notify/notify-item.js"></script>
-
-    <!--init-->
-<script src="js/init.js"></script>
-<script src="js/worker.js"></script>
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.6.0/socket.io.js"></script>-->
     <script>
-        var worker = new SharedWorker('js/worker.js');
+        var worker = new SharedWorker('../worker.js');
         worker.port.addEventListener("message", function(e) {
             var data = JSON.parse(e.data);
             console.log('worker say: ' + data.type);

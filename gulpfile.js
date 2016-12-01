@@ -12,7 +12,12 @@ var concat = require('gulp-concat');
 
 var pathSrc = {
     css : 'src/css/*.css',
-    js : 'src/js/**',
+    js : ['src/js/app.js',
+        'src/js/lib/*.js',
+        'src/js/request/*.js',
+        'src/js/model/*.js',
+        'src/js/view/**',
+        'src/js/init/*.js'],
     img : 'src/img/**',
     html : 'src/*.html'
 };
@@ -25,29 +30,31 @@ var pathApp = {
 };
 
 
-gulp.task('default' , ['html', 'js', 'css', 'img']);
+gulp.task('default' , ['js', 'css', 'img']);
 
 gulp.task('css', function() {
     return gulp.src(pathSrc.css)
         .pipe(cssPrefix())
         .pipe(cssMin())
-        .pipe(gulp.dest(pathApp.css))
+        .pipe(concat('app.css'))
+        .pipe(gulp.dest(pathApp.css));
 });
 
 gulp.task('js', function() {
     return gulp.src(pathSrc.js)
         .pipe(jshint())
         .pipe(jshint.reporter('default'))
-        .pipe(uglify())
-        .pipe(gulp.dest(pathApp.js))
+        // .pipe(uglify())
+        .pipe(concat('app.js'))
+        .pipe(gulp.dest(pathApp.js));
 });
 
 gulp.task('img', function() {
     return gulp.src(pathSrc.img)
-        .pipe(gulp.dest(pathApp.img))
+        .pipe(gulp.dest(pathApp.img));
 });
 
 gulp.task('html', function() {
     return gulp.src(pathSrc.html)
-        .pipe(gulp.dest(pathApp.root))
+        .pipe(gulp.dest(pathApp.root));
 });
