@@ -1,0 +1,1 @@
+!function(){"use strict";var e={eventCollection:[],addListener:function(e,n){this.eventCollection.push({eventType:e,eventHandler:n})},dispatch:function(e,n){this.eventCollection.forEach(function(t){e===t.eventType&&t.eventHandler(n)})}};App.serviceContainer.lib.event=e,App.Lib.Event=e}(App);

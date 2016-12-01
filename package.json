@@ -1,23 +1,36 @@
 {
-  "name": "app",
+  "name": "userlist",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "gulpfile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seregaEvdokimov/userList.git"
   },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/seregaEvdokimov/userList/issues"
+  },
+  "homepage": "https://github.com/seregaEvdokimov/userList#readme",
   "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssmin": "^0.1.7",
+    "gulp-jshint": "^2.0.4",
+    "jshint-stylish": "^2.2.1",
+    "gulp-uglify": "^2.0.0",
+    "jshint": "^2.9.4"
+  },
+  "dependencies": {
+    "socket.io": "^1.6.0",
     "body-parser": "^1.15.2",
     "del": "^2.2.2",
     "express": "4.14.0",
-    "faker": "^3.1.0",
-    "jshint": "^2.9.2",
-    "jshint-stylish": "^2.2.1"
-  },
-  "dependencies": {
-    "socket.io": "^1.6.0"
+    "faker": "^3.1.0"
   }
 }

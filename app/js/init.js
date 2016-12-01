@@ -1,0 +1,1 @@
+!function(e,n){"use strict";function t(){var n=new e.Model.User,t={start:e.pagination.currentPage,limit:e.pagination.perPage};n.load(t).then(function(){var t=new e.View({users:n.records});t.render()})}n.addEventListener("DOMContentLoaded",function(){e.container=n.getElementById("app"),t()})}(App,document);

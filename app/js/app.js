@@ -1,0 +1,1 @@
+!function(e){"use strict";e.App={container:null,Model:{},Lib:{},View:{},currentLanguage:"ru",showNotify:!0,serviceContainer:{template:{},lib:{},model:{}},pagination:{type:"lazyLoad",currentPage:1,perPage:8}}}(window);
