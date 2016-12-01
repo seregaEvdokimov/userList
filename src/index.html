@@ -3,16 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <!-- @if NODE_ENV='production' -->
+    <script src="js/app.js"></script>
+    <!-- @endif -->
+    <!-- @exclude -->
     <link rel="stylesheet" href="css/style.css">
+    <!-- @endexclude -->
 </head>
 <body>
 
     <div id="app"></div>
 
-    <!--app-->
+<!-- @if NODE_ENV='production' -->
+<script src="js/app.js"></script>
+<!-- @endif -->
+<!-- @exclude -->
+
+    <!-- app -->
 <script src="js/app.js"></script>
 
-    <!--lib-->
+    <!-- lib -->
 <script src="js/lib/Timer.js"></script>
 <script src="js/lib/ProgressBarTimer.js"></script>
 <script src="js/lib/Tooltip.js"></script>
@@ -21,16 +31,16 @@
 <script src="js/lib/Event.js"></script>
 <script src="js/lib/Dictionary.js"></script>
 
-    <!--Requests-->
+    <!-- request -->
 <script src="js/request/request.js"></script>
 <script src="js/request/xhr.js"></script>
 
-    <!--Model-->
+    <!-- model -->
 <script src="js/model/model.js"></script>
 <script src="js/model/user.js"></script>
 <script src="js/model/tooltip.js"></script>
 
-    <!--Views-->
+    <!-- view -->
 <script src="js/view/view.js"></script>
 <script src="js/view/templates/header/index.js"></script>
 <script src="js/view/templates/header/search.js"></script>
@@ -50,10 +60,12 @@
 <script src="js/view/templates/notify/index.js"></script>
 <script src="js/view/templates/notify/notify-item.js"></script>
 
-    <!--init-->
+    <!-- init -->
 <script src="js/init/init.js"></script>
+
+<!-- @endexclude -->
 <script src="../worker.js"></script>
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.6.0/socket.io.js"></script>-->
+
     <script>
         var worker = new SharedWorker('../worker.js');
         worker.port.addEventListener("message", function(e) {

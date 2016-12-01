@@ -8,6 +8,7 @@ var cssPrefix = require('gulp-autoprefixer');
 var uglify = require('gulp-uglify');
 var jshint = require('gulp-jshint');
 var concat = require('gulp-concat');
+var preprocess = require('gulp-preprocess');
 
 
 var pathSrc = {
@@ -29,8 +30,7 @@ var pathApp = {
     root : 'app/'
 };
 
-
-gulp.task('default' , ['js', 'css', 'img']);
+gulp.task('default' , ['html', 'js', 'css', 'img']);
 
 gulp.task('css', function() {
     return gulp.src(pathSrc.css)
@@ -54,7 +54,9 @@ gulp.task('img', function() {
         .pipe(gulp.dest(pathApp.img));
 });
 
+
 gulp.task('html', function() {
     return gulp.src(pathSrc.html)
+        .pipe(preprocess({context: {NODE_ENV: 'production'}}))
         .pipe(gulp.dest(pathApp.root));
 });
