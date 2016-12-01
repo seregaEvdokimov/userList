@@ -44,7 +44,7 @@ gulp.task('js', function() {
     return gulp.src(pathSrc.js)
         .pipe(jshint())
         .pipe(jshint.reporter('default'))
-        // .pipe(uglify())
+        .pipe(uglify())
         .pipe(concat('app.js'))
         .pipe(gulp.dest(pathApp.js));
 });
