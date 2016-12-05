@@ -32,5 +32,9 @@
         return this.el;
     };
 
+    AddUser.prototype.destroy = function() {
+        this.blockEl.el.removeChild(this.el);
+    };
+
     App.View.Option.AddUser = AddUser;
 })();

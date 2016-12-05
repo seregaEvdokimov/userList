@@ -19,12 +19,9 @@
     };
 
     Timer.prototype.start = function() {
+        if(this.active === true) return false;
+
         var self = this;
-
-        if(this.active === true) {
-            return false;
-        }
-
         this.active = true;
         this.intervalId = setInterval(function() {
             self.cb();

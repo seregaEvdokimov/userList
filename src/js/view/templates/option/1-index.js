@@ -11,11 +11,9 @@
         this.el.dataset.languageKey = 'option';
 
         this.container = App.serviceContainer;
-        this.rootView = option.rootView;
+        this.layoutEl = option.layoutEl;
         this.pagination = App.pagination;
-        this.collection = {
-            user: option.userCollection
-        };
+        this.collection = option.collection;
 
         // components
         this.addUser = new App.View.Option.AddUser({
@@ -39,6 +37,12 @@
         this.el.appendChild(this.addUser.render());
         this.el.appendChild(this.pagination.render());
         return this.el;
+    };
+
+    Option.prototype.destroy = function() {
+        this.addUser.destroy();
+        this.pagination.destroy();
+        this.layoutEl.el.removeChild(this.el);
     };
 
     App.View.Option = Option;

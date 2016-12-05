@@ -132,7 +132,7 @@
             name: /(%name)/g,
             id: /(%id)/g
         },
-        event: App.Lib.Event,
+        event: App.Lib.Event, // TODO translate Error
         t: function(keys) { // translate
             var words = this[App.currentLanguage];
 

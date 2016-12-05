@@ -16,17 +16,12 @@
             rootView: this
         });
 
-        this.usersTable = new App.View.UserTable({
+        this.layout = new App.View.Layout({
             userCollection: collection.users,
             rootView: this
         });
 
         this.modalWindow = new App.View.Modal({
-            userCollection: collection.users,
-            rootView: this
-        });
-
-        this.optionBlock = new App.View.Option({
             userCollection: collection.users,
             rootView: this
         });
@@ -55,10 +50,9 @@
 
     View.prototype.render = function() {
         App.container.appendChild(this.header.render());
-        App.container.appendChild(this.usersTable.render());
         App.container.appendChild(this.modalWindow.render());
-        App.container.appendChild(this.optionBlock.render());
         App.container.appendChild(this.notifyBlock.render());
+        App.container.appendChild(this.layout.render());
     };
 
     View.prototype.localization = function() {
@@ -78,7 +72,6 @@
             });
         } else {
             var keys = acc.substring(0, acc.length - 1).split('|');
-
             var params = keys.reduce(function(acc, item) {
                 if(item !== '') acc.push(item);
                 return acc;

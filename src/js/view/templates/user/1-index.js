@@ -9,12 +9,10 @@
         this.el = document.createElement('table');
         this.el.className = 'table';
         this.el.dataset.languageKey = 'userTable';
-        this.rootView = options.rootView;
+        this.layoutEl = options.layoutEl;
         this.container = App.serviceContainer;
         this.tooltip = null;
-        this.collection = {
-            user: options.userCollection
-        };
+        this.collection = options.collection;
 
         // components
         this.tHead = new App.View.UserTable.Head({
@@ -64,6 +62,13 @@
         this.el.appendChild(this.tHead.render());
         this.el.appendChild(this.tBody.render());
         return this.el;
+    };
+
+    Table.prototype.destroy = function() {
+        if(this.tooltip) this.tooltip.remove();
+        this.tHead.destroy();
+        this.tBody.destroy();
+        this.layoutEl.el.removeChild(this.el);
     };
 
     App.View.UserTable = Table;

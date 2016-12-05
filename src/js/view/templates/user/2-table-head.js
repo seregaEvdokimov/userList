@@ -89,9 +89,7 @@
     Head.prototype.handlerSort = function(self, event) {
         var el = event.target;
 
-        if(el.className === 'delete' || el.className === 'edit') {
-            return false;
-        }
+        if(el.className === 'delete' || el.className === 'edit') return false;
 
         var direction = el.dataset.orderBy;
         var param = el.dataset.sortBy;
@@ -124,7 +122,6 @@
     };
 
     Head.prototype.render = function() {
-        this.tdEl = [];
         var row = document.createElement('tr');
         var fragment = document.createDocumentFragment();
         var arr = this.renderOrder;
@@ -132,14 +129,16 @@
         for(var i = 0; i < arr.length; i++) {
             var field = arr[i];
             var el = this.fields[field]();
-            this.tdEl.push(el);
             fragment.appendChild(el);
         }
 
         row.appendChild(fragment);
         this.el.appendChild(row);
-
         return this.el;
+    };
+
+    Head.prototype.destroy = function() {
+        this.tableEl.el.removeChild(this.el);
     };
 
     App.View.UserTable.Head = Head;

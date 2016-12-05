@@ -34,6 +34,7 @@
 
         // listeners
         this.el.addEventListener('click', this.handlerCotrolsBtn.bind(this, this));
+        this.el.addEventListener('dblclick', this.changeRoute.bind(this, this));
         this.el.addEventListener('transitionend', this.transitionend.bind(this, this));
 
         // put to container
@@ -67,6 +68,19 @@
                 self.removeRow(el);
                 break;
         }
+    };
+
+    Body.prototype.changeRoute = function(self, event) {
+        var el = event.target;
+        var getRow = function(el) {
+            var parent = el.parentNode;
+            if(parent.tagName != 'TR') return getRow(parent);
+            return parent;
+        };
+
+        var row = getRow(el);
+        var id = parseInt(row.querySelector('.id').textContent);
+        self.container.lib.router.route('/user', {id: id});
     };
 
     Body.prototype.sort = function(result) {
@@ -187,6 +201,14 @@
 
         this.el.appendChild(fragment);
         return this.el;
+    };
+
+    Body.prototype.destroy = function() {
+        this.tRows.forEach(function(row) {
+           row.destroy();
+        });
+
+        this.tableEl.el.removeChild(this.el);
     };
 
     App.View.UserTable.Body = Body;

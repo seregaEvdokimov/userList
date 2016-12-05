@@ -191,5 +191,9 @@
         return this.el;
     };
 
+    Pagination.prototype.destroy = function() {
+        this.blockEl.el.removeChild(this.el);
+    };
+
     App.View.Option.Pagination = Pagination;
 })(App, document);
