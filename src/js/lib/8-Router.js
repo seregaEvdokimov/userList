@@ -15,7 +15,7 @@
 
             history.pushState(state, null, search + url);
             layout.change(state);
-            localStorage.setItem('routeState', JSON.stringify(state));
+            // localStorage.setItem('routeState', JSON.stringify(state));
         },
         updateState: function(self, event) {
             var layout = App.serviceContainer.template.layout;
@@ -26,11 +26,11 @@
     };
 
     window.addEventListener('popstate', Router.updateState.bind(window, Router));
-    window.addEventListener('load', function() {
-        var layout = App.serviceContainer.template.layout;
-        var routeState = JSON.parse(localStorage.getItem('routeState'));
-        layout.change(routeState);
-    });
+    // window.addEventListener('load', function() {
+    //     var layout = App.serviceContainer.template.layout;
+    //     var routeState = JSON.parse(localStorage.getItem('routeState'));
+    //     layout.change(routeState);
+    // });
 
     App.serviceContainer.lib.router = Router;
     App.Lib.Router = Router;
