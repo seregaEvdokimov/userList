@@ -28,9 +28,7 @@
         App.serviceContainer.template.layout = this;
     }
 
-    Layout.prototype.change = function(state) {
-        var type = state.route.slice(1);
-
+    Layout.prototype.change = function(type, params) {
         // очищаем предыдущее состояние
         for(var index in this.state) {
             this.state[index].destroy();
@@ -44,7 +42,12 @@
                 this.state.optionBlock = new App.View.Option(this.options);
                 break;
             case 'user':
-                this.state.person = new App.View.Person(this.options, state);
+                if('list' in params) {
+                    this.state.usersTable = new App.View.UserTable(this.options);
+                    this.state.optionBlock = new App.View.Option(this.options);
+                    break;
+                }
+                this.state.person = new App.View.Person(this.options, params);
                 break;
         }
 

@@ -7,30 +7,37 @@
 
     var Router = {
         layout: App.serviceContainer,
-        route: function(url, state) {
+        route: function(path) {
             var layout = App.serviceContainer.template.layout;
+            var search = location.search.split('#')[0];
+            history.pushState({}, null, search + path);
 
-            var search = location.search.split('/')[0];
-            state.route = url;
+            var url = this.parseUrl();
+            layout.change(url.type, url.params);
+        },
+        parseUrl: function() {
+            if(location.hash == '') return {type: 'index', params: {}};
 
-            history.pushState(state, null, search + url);
-            layout.change(state);
-            // localStorage.setItem('routeState', JSON.stringify(state));
+            var match = location.hash.match(/#\/(.*)/, match)[1].split('/');
+            var type = match[0];
+            var params = {};
+
+            for(var i = 1; i < match.length; i++) {
+                i % 2 == 0 ? params[match[i - 1]] = match[i] : params[match[i]] = true;
+            }
+
+            return {type: type, params: params};
         },
         updateState: function(self, event) {
-            var layout = App.serviceContainer.template.layout;
-            var state = event.state ? event.state: {route: '/index'};
+            var url = self.parseUrl();
 
-            layout.change(state);
+            var layout = App.serviceContainer.template.layout;
+            layout.change(url.type, url.params);
         }
     };
 
     window.addEventListener('popstate', Router.updateState.bind(window, Router));
-    // window.addEventListener('load', function() {
-    //     var layout = App.serviceContainer.template.layout;
-    //     var routeState = JSON.parse(localStorage.getItem('routeState'));
-    //     layout.change(routeState);
-    // });
+    window.addEventListener('load', Router.updateState.bind(window, Router));
 
     App.serviceContainer.lib.router = Router;
     App.Lib.Router = Router;

@@ -80,7 +80,7 @@
 
         var row = getRow(el);
         var id = parseInt(row.querySelector('.id').textContent);
-        self.container.lib.router.route('/user', {id: id});
+        self.container.lib.router.route('#/user/id/' + id);
     };
 
     Body.prototype.sort = function(result) {
