@@ -67,6 +67,12 @@ var backAPI = {
     getUsers: function(data) {
         var self = this;
         if(data.count) return JSON.stringify({count: self.userData.length});
+        if(data.type == 'findById') {
+            var find = self.userData.filter(function(item) {
+                return item.id === parseInt(data.id);
+            });
+            return JSON.stringify({user: find[0]});
+        }
 
         var start = (data.start == 1) ? 0 : data.start;
         var limit = data.limit;

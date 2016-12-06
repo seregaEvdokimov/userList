@@ -18,7 +18,7 @@
         parseUrl: function() {
             if(location.hash == '') return {type: 'index', params: {}};
 
-            var match = location.hash.match(/#\/(.*)/, match)[1].split('/');
+            var match = location.hash.match(/#\/(.*)/)[1].split('/');
             var type = match[0];
             var params = {};
 
@@ -30,8 +30,8 @@
         },
         updateState: function(self, event) {
             var url = self.parseUrl();
-
             var layout = App.serviceContainer.template.layout;
+
             layout.change(url.type, url.params);
         }
     };

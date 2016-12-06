@@ -31,7 +31,6 @@
             rootView: this
         });
 
-
         // listeners
         document.addEventListener('keydown', this.handlerKeyPress.bind(this, this));
         this.event.addListener('languageChange', this.localization.bind(this));

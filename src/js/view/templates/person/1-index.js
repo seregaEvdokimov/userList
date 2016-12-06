@@ -8,6 +8,7 @@
         var self = this;
         this.el = document.createElement('div');
         this.el.className = 'person-wrapper';
+        this.userModel = new App.Model.User();
 
         this.nodes = {};
         this.renderOrder = ['id', 'name', 'email'];
@@ -39,26 +40,28 @@
 
     Person.prototype.render = function() {
         var self = this;
-        var find = this.collection.user.filter(function(item) {
-            return item.id == self.params.id
-        });
-        find = find[0];
-
-        var avatar = document.createElement('img');
-        avatar.setAttribute('src', find.avatar);
 
         var infoBlock = document.createElement('div');
-        infoBlock.className = 'info';
-
+        var avatar = document.createElement('img');
         var fragment = document.createDocumentFragment();
-        var arr = this.renderOrder;
-        for(var i = 0; i < arr.length; i++) {
-            var field = arr[i];
-            var el = this.fields[field](find);
-            fragment.appendChild(el);
-        }
 
-        infoBlock.appendChild(fragment);
+        self.userModel.load({type: 'findById', id: self.params.id}).then(function(res) {
+            var user = res.user;
+
+            avatar.setAttribute('src', user.avatar);
+            infoBlock.className = 'info';
+
+            var arr = self.renderOrder;
+            for(var i = 0; i < arr.length; i++) {
+                var field = arr[i];
+                var el = self.fields[field](user);
+                fragment.appendChild(el);
+            }
+
+            infoBlock.appendChild(fragment);
+        });
+
+
         this.el.appendChild(avatar);
         this.el.appendChild(infoBlock);
         return this.el;
