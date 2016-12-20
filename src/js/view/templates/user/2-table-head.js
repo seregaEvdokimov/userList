@@ -94,24 +94,26 @@
         var direction = el.dataset.orderBy;
         var param = el.dataset.sortBy;
 
-        self.tdEl.forEach(function(item) {
+        for(var index in self.nodes) {
+            var item = self.nodes[index];
             var sort = item.dataset.sortBy;
 
             item.classList.remove('active');
+            item.classList.remove('desc');
+            item.classList.remove('asc');
+
             if(sort === param) {
                 item.classList.add('active');
 
-                if(item.dataset.orderBy == 'asc') {
-                    item.classList.remove('asc');
-                    item.classList.add('desc');
-                    item.dataset.orderBy = 'desc';
-                } else {
-                    item.classList.remove('desc');
+                if(direction === 'asc') {
                     item.classList.add('asc');
-                    item.dataset.orderBy = 'asc';
+                } else {
+                    item.classList.add('desc');
                 }
+
+                item.dataset.orderBy = (direction === 'desc') ? 'asc' : 'desc';
             }
-        });
+        }
 
         self.sortCollection(direction, param);
     };
