@@ -47,7 +47,9 @@
     };
 
     ProgressBarTimer.prototype.showProgress = function() {
-        this.getClassName() == 'positive' ? this.element.classList.remove('negative') : this.element.classList.remove('positive');
+        this.getClassName() == 'positive'
+            ? this.element.classList.remove('negative')
+            : this.element.classList.remove('positive');
 
         this.element.style.width = this.getPercent() + '%';
         this.element.classList.add(this.getClassName());

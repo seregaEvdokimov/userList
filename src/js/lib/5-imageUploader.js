@@ -37,7 +37,10 @@
         img.setAttribute('src', file);
         this.element.dataset.img = file;
 
-        images ? images.replaceWith(img) : parent.insertBefore(img, this.element);
+        images
+            ? images.replaceWith(img)
+            : parent.insertBefore(img, this.element);
+
         this.callback(file);
     };
 
