@@ -30,7 +30,7 @@ var pathApp = {
     root : 'app/'
 };
 
-gulp.task('default' , ['html', 'js', 'css', 'img']);
+gulp.task('build' , ['html', 'js', 'css', 'img']);
 
 gulp.task('css', function() {
     return gulp.src(pathSrc.css)
